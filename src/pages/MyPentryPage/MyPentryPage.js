@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Switch, Route, Link } from 'react-router-dom';
+import { nanoid } from 'nanoid'
 import Inks from '../../components/Inks';
 import { PANTRY_API } from '../../App';
 
@@ -12,21 +13,40 @@ class MyPentryPage extends Component {
   }
 
   componentDidMount() {
-    if (this.state.user) {
-      axios
-        .get(`${PANTRY_API}/basket/${this.state.user.username}`)
-        .then(res => this.setState({
-          inks: res.data.inks,
-          pens: res.data.pens
-        }));
-    } else {
-      this.props.history.push('/');
-    }
+    this.state.user
+      ? this.refreshData()
+      : this.props.history.push('/');
   }
 
   handleLogout = () => {
     localStorage.removeItem('loggedInUser');
     this.props.history.push('/');
+  }
+
+  handleInkSubmit = inkData => {
+    axios({
+      url: `${PANTRY_API}/basket/${this.state.user.username}`,
+      method: 'PUT',
+      data: {
+        inks: [
+          ...this.state.inks,
+          {
+            id: nanoid(),
+            dateAdded: Date.now(),
+            ...inkData
+          }
+        ]
+      }
+    }).then(res => console.log('RES', res.data));
+  }
+
+  refreshData = () => {
+    axios
+      .get(`${PANTRY_API}/basket/${this.state.user.username}`)
+      .then(res => this.setState({
+        inks: res.data.inks,
+        pens: res.data.pens
+      }));
   }
 
   render() {
@@ -40,7 +60,7 @@ class MyPentryPage extends Component {
           Welcome,&nbsp;
           <strong>{this.state.user.username}</strong>&nbsp;
           (<Link to="/" onClick={this.handleLogout}>logout</Link>)
-          </p>
+        </p>
         <Link to={`${path}`}>
           <h1>Pentry</h1>
         </Link>
@@ -51,7 +71,12 @@ class MyPentryPage extends Component {
         </ul>
         <Switch>
           <Route path={`${path}/inks`} render={routerProps => {
-            return <Inks inks={this.state.inks} {...routerProps} />;
+            return (
+              <Inks
+                inks={this.state.inks}
+                handleSubmit={this.handleInkSubmit}
+                {...routerProps} />
+            )
           }} />
         </Switch>
       </>

@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 class AddInk extends Component {
   state = {
     brand: '',
-    name: '',
+    inkName: '',
+    colorName: '',
     type: '',
     size: '',
     hue: '',
@@ -35,10 +36,18 @@ class AddInk extends Component {
         <div>
           <input
             type="text"
-            name="name"
-            placeholder="Name"
+            name="inkName"
+            placeholder="Ink Name"
             onChange={this.handleInputChange}
-            value={this.state.name} />
+            value={this.state.inkName} />
+        </div>
+        <div>
+          <input
+            type="text"
+            name="colorName"
+            placeholder="Color Name"
+            onChange={this.handleInputChange}
+            value={this.state.colorName} />
         </div>
         <div>
           <input
