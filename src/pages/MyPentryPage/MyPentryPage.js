@@ -62,7 +62,7 @@ class MyPentryPage extends Component {
       inkedPens: [
         {
           id: nanoid(),
-          dateAdded: Date.now(),
+          dateInked: Date.now(),
           penId,
           inkId,
           isActive: true
@@ -79,7 +79,8 @@ class MyPentryPage extends Component {
       inkedPens: [
         {
           ...pen,
-          isActive: false
+          isActive: false,
+          dateCleaned: Date.now()
         }
       ]
     });

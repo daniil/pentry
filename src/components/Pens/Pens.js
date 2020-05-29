@@ -3,9 +3,16 @@ import AddPen from '../AddPen';
 
 class Pens extends Component {
   checkPenInked = pen => {
-    return this.props.inkedPens.find(inkedPen => {
-      return inkedPen.penId === pen.id && inkedPen.isActive;
+    const inkedHistory = this.props.inkedPens.filter(inkedPen => {
+      return inkedPen.penId === pen.id;
     });
+
+    if (!inkedHistory.length) return false;
+    
+    if (inkedHistory.length && !inkedHistory[inkedHistory.length - 1].isActive)
+      return false;
+    
+    return inkedHistory[inkedHistory.length - 1];
   }
 
   render() {
