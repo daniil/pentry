@@ -2,6 +2,12 @@ import React, { Component } from 'react';
 import AddPen from '../AddPen';
 
 class Pens extends Component {
+  checkPenInked = pen => {
+    return this.props.inkedPens.find(inkedPen => {
+      return inkedPen.penId === pen.id && inkedPen.isActive;
+    });
+  }
+
   render() {
     return (
       <>
@@ -18,6 +24,8 @@ class Pens extends Component {
             <div>Nib Size</div>
           </li>
           {this.props.pens.map(pen => {
+            const penInked = this.checkPenInked(pen);
+
             return (
               <li key={pen.id}>
                 <div>{pen.brand}</div>
@@ -25,9 +33,14 @@ class Pens extends Component {
                 <div>{pen.finishName}</div>
                 <div>{pen.nibType}</div>
                 <div>{pen.nibSize}</div>
-                <button onClick={() => this.props.handlePenInking(pen)}>
-                  Ink This Pen
-                </button>
+                {!penInked &&
+                  <button onClick={() => this.props.handlePenInking(pen)}>
+                    Ink This Pen
+                  </button>}
+                {penInked &&
+                  <button onClick={() => this.props.handlePenCleaning(penInked)}>
+                    Clean This Pen
+                  </button>}
               </li>
             );
           })}

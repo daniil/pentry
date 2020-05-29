@@ -30,7 +30,8 @@ class Signup extends Component {
           username: this.state.username,
           password: hashedPassword,
           inks: [],
-          pens: []
+          pens: [],
+          inkedPens: []
         })
         .then(() => this.props.handleLogin(this.state.username));
     });

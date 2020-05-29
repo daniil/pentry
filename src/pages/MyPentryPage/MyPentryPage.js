@@ -30,7 +30,6 @@ class MyPentryPage extends Component {
   handleInkSubmit = inkData => {
     this.updateData({
       inks: [
-        ...this.state.inks,
         {
           id: nanoid(),
           dateAdded: Date.now(),
@@ -43,7 +42,6 @@ class MyPentryPage extends Component {
   handlePenSubmit = penData => {
     this.updateData({
       pens: [
-        ...this.state.pens,
         {
           id: nanoid(),
           dateAdded: Date.now(),
@@ -62,7 +60,6 @@ class MyPentryPage extends Component {
   handleInkChoice = (penId, inkId) => {
     this.updateData({
       inkedPens: [
-        ...this.state.inkedPens,
         {
           id: nanoid(),
           dateAdded: Date.now(),
@@ -74,6 +71,17 @@ class MyPentryPage extends Component {
     });
     this.setState({
       inkPen: null
+    });
+  }
+
+  handlePenCleaning = pen => {
+    this.updateData({
+      inkedPens: [
+        {
+          ...pen,
+          isActive: false
+        }
+      ]
     });
   }
 
@@ -90,7 +98,8 @@ class MyPentryPage extends Component {
       .get(`${PANTRY_API}/basket/${this.state.user.username}`)
       .then(res => this.setState({
         inks: res.data.inks,
-        pens: res.data.pens
+        pens: res.data.pens,
+        inkedPens: res.data.inkedPens
       }));
   }
 
@@ -130,8 +139,10 @@ class MyPentryPage extends Component {
             return (
               <Pens
                 pens={this.state.pens}
+                inkedPens={this.state.inkedPens}
                 handleSubmit={this.handlePenSubmit}
                 handlePenInking={this.handlePenInking}
+                handlePenCleaning={this.handlePenCleaning}
                 {...routerProps} />
             )
           }} />
