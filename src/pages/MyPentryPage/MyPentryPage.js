@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Switch, Route, Link } from 'react-router-dom';
 import { nanoid } from 'nanoid'
 import Inks from '../../components/Inks';
+import Pens from '../../components/Pens';
 import { PANTRY_API } from '../../App';
 
 class MyPentryPage extends Component {
@@ -24,20 +25,41 @@ class MyPentryPage extends Component {
   }
 
   handleInkSubmit = inkData => {
+    this.updateData({
+      inks: [
+        ...this.state.inks,
+        {
+          id: nanoid(),
+          dateAdded: Date.now(),
+          ...inkData
+        }
+      ]
+    });
+  }
+
+  handlePenSubmit = penData => {
+    this.updateData({
+      pens: [
+        ...this.state.pens,
+        {
+          id: nanoid(),
+          dateAdded: Date.now(),
+          ...penData
+        }
+      ]
+    })
+  }
+
+  handlePenInking = pen => {
+    console.log('Pen', pen);
+  }
+
+  updateData = newData => {
     axios({
       url: `${PANTRY_API}/basket/${this.state.user.username}`,
       method: 'PUT',
-      data: {
-        inks: [
-          ...this.state.inks,
-          {
-            id: nanoid(),
-            dateAdded: Date.now(),
-            ...inkData
-          }
-        ]
-      }
-    }).then(res => console.log('RES', res.data));
+      data: newData
+    }).then(() => this.refreshData());
   }
 
   refreshData = () => {
@@ -68,6 +90,9 @@ class MyPentryPage extends Component {
           <li>
             <Link to={`${path}/inks`}>Inks</Link>
           </li>
+          <li>
+            <Link to={`${path}/pens`}>Pens</Link>
+          </li>
         </ul>
         <Switch>
           <Route path={`${path}/inks`} render={routerProps => {
@@ -75,6 +100,15 @@ class MyPentryPage extends Component {
               <Inks
                 inks={this.state.inks}
                 handleSubmit={this.handleInkSubmit}
+                {...routerProps} />
+            )
+          }} />
+          <Route path={`${path}/pens`} render={routerProps => {
+            return (
+              <Pens
+                pens={this.state.pens}
+                handleSubmit={this.handlePenSubmit}
+                handlePenInking={this.handlePenInking}
                 {...routerProps} />
             )
           }} />

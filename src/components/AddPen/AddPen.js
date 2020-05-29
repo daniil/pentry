@@ -2,15 +2,13 @@ import React, { Component } from 'react';
 
 const initState = {
   brand: '',
-  inkName: '',
-  colorName: '',
-  type: '',
-  size: '',
-  hue: '',
-  props: ''
+  model: '',
+  finishName: '',
+  nibType: '',
+  nibSize: ''
 };
 
-class AddInk extends Component {
+class AddPen extends Component {
   state = initState
 
   handleInputChange = e => {
@@ -39,50 +37,34 @@ class AddInk extends Component {
         <div>
           <input
             type="text"
-            name="inkName"
-            placeholder="Ink Name"
+            name="model"
+            placeholder="Model Name"
             onChange={this.handleInputChange}
-            value={this.state.inkName} />
+            value={this.state.model} />
         </div>
         <div>
           <input
             type="text"
-            name="colorName"
-            placeholder="Color Name"
+            name="finishName"
+            placeholder="Finish Name"
             onChange={this.handleInputChange}
-            value={this.state.colorName} />
+            value={this.state.finishName} />
         </div>
         <div>
           <input
             type="text"
-            name="type"
-            placeholder="Type"
+            name="nibType"
+            placeholder="Nib Type"
             onChange={this.handleInputChange}
-            value={this.state.type} />  
+            value={this.state.nibType} />  
         </div>
         <div>
           <input
             type="text"
-            name="size"
-            placeholder="Size"
+            name="nibSize"
+            placeholder="Nib Size"
             onChange={this.handleInputChange}
-            value={this.state.size} />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="hue"
-            placeholder="Hue"
-            onChange={this.handleInputChange}
-            value={this.state.hue} />  
-        </div>
-        <div>
-          <input
-            type="text"
-            name="props"
-            placeholder="Properties"
-            onChange={this.handleInputChange}
-            value={this.state.props} />  
+            value={this.state.nibSize} />
         </div>
         <button onClick={this.handleSubmit}>Add</button>
       </form>
@@ -90,4 +72,4 @@ class AddInk extends Component {
   }
 }
 
-export default AddInk;
+export default AddPen;
