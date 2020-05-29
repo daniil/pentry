@@ -4,13 +4,16 @@ import { Switch, Route, Link } from 'react-router-dom';
 import { nanoid } from 'nanoid'
 import Inks from '../../components/Inks';
 import Pens from '../../components/Pens';
+import InkPen from '../../components/InkPen';
 import { PANTRY_API } from '../../App';
 
 class MyPentryPage extends Component {
   state = {
     user: JSON.parse(localStorage.getItem('loggedInUser')),
     inks: [],
-    pens: []
+    pens: [],
+    inkedPens: [],
+    inkPen: null
   }
 
   componentDidMount() {
@@ -51,7 +54,27 @@ class MyPentryPage extends Component {
   }
 
   handlePenInking = pen => {
-    console.log('Pen', pen);
+    this.setState({
+      inkPen: pen
+    });
+  }
+
+  handleInkChoice = (penId, inkId) => {
+    this.updateData({
+      inkedPens: [
+        ...this.state.inkedPens,
+        {
+          id: nanoid(),
+          dateAdded: Date.now(),
+          penId,
+          inkId,
+          isActive: true
+        }
+      ]
+    });
+    this.setState({
+      inkPen: null
+    });
   }
 
   updateData = newData => {
@@ -113,6 +136,11 @@ class MyPentryPage extends Component {
             )
           }} />
         </Switch>
+        {this.state.inkPen &&
+          <InkPen
+            pen={this.state.inkPen}
+            inks={this.state.inks}
+            handleInkChoice={this.handleInkChoice} />}
       </>
     )
   }
