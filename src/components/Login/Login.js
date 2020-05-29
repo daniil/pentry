@@ -22,15 +22,12 @@ class Login extends Component {
       .then(res => {
         bcrypt.compare(this.state.password, res.data.password, (_, passwordMatch) => {
           if (passwordMatch) {
-            localStorage.setItem('loggedInUser', JSON.stringify({
-              username: res.data.username
-            }));
-            this.props.handleLogin();
+            this.props.handleLogin(res.data.username);
           } else {
             throw(new Error('Username and password dont match'));
           }
         });
-      }, err => console.log('Please signup, user cant be found'))
+      }, () => console.log('Please signup, user cant be found'))
       .catch(err => console.log(err));
   }
 

@@ -28,9 +28,11 @@ class Signup extends Component {
       axios
         .post(`${PANTRY_API}/basket/${this.state.username}`, {
           username: this.state.username,
-          password: hashedPassword
+          password: hashedPassword,
+          inks: [],
+          pens: []
         })
-        .then(res => console.log('RES', res));
+        .then(() => this.props.handleLogin(this.state.username));
     });
   }
 

@@ -7,15 +7,20 @@ class LoginPage extends Component {
     this.checkUserLoggedIn();
   }
 
-  handleLogin = () => {
+  handleLogin = username => {
+    localStorage.setItem('loggedInUser', JSON.stringify({
+      username
+    }));
     this.checkUserLoggedIn();
   }
 
   checkUserLoggedIn = () => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    if (loggedInUser) {
-      this.props.history.push('/my-pentry');
-    }
+    loggedInUser && this.props.history.push('/my-pentry');
+  }
+
+  handleSignup = () => {
+    this.props.history.push('/')
   }
   
   render() {
@@ -23,7 +28,7 @@ class LoginPage extends Component {
       <>
         <Login handleLogin={this.handleLogin} />
         - or -
-        <Signup />
+        <Signup handleLogin={this.handleLogin} />
       </>
     )
   }
