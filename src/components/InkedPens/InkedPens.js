@@ -1,0 +1,60 @@
+import React, { Component } from 'react';
+
+class InkedPens extends Component {
+  getCurrentlyInked = () => {
+    const { inkedPens } = this.props;
+    
+    const inactiveIds = inkedPens
+      .filter(inking => !inking.isActive)
+      .map(inking => inking.id);
+
+    const activeInked = inkedPens
+      .filter(inking => !inactiveIds.includes(inking.id));
+
+    return activeInked;
+  }
+
+  renderPen = penId => {
+    const { pens } = this.props;
+    const currPen = pens.find(pen => pen.id === penId);
+
+    return (
+      <>{currPen.brand} {currPen.model} {currPen.finishName}</>
+    )
+  }
+
+  renderInk = inkId => {
+    const { inks } = this.props;
+    const currInk = inks.find(ink => ink.id === inkId);
+
+    return (
+      <>{currInk.brand} {currInk.inkName} {currInk.colorName}</>
+    )
+  }
+
+  render() {
+    const currentlyInked = this.getCurrentlyInked();
+
+    return (
+      <>
+        <h2>Inked Pens</h2>
+        <ul>
+          <li>
+            <div>Pen</div>
+            <div>Ink</div>
+            <div>Inked Since</div>
+          </li>
+          {currentlyInked.map(inking => {
+            return <li key={inking.id}>
+              <div>{this.renderPen(inking.penId)}</div>
+              <div>{this.renderInk(inking.inkId)}</div>
+              <div>{inking.dateInked}</div>
+            </li>;
+          })}
+        </ul>
+      </>
+    );
+  }
+}
+
+export default InkedPens;

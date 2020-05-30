@@ -6,6 +6,7 @@ import { decryptUser } from '../../utils/userEncryption';
 import Inks from '../../components/Inks';
 import Pens from '../../components/Pens';
 import InkPen from '../../components/InkPen';
+import InkedPens from '../../components/InkedPens';
 import { PANTRY_API } from '../../App';
 
 class MyPentryPage extends Component {
@@ -136,6 +137,15 @@ class MyPentryPage extends Component {
           </li>
         </ul>
         <Switch>
+          <Route path={`${path}`} exact render={routerProps => {
+            return (
+              <InkedPens
+                inks={this.state.inks}
+                pens={this.state.pens}
+                inkedPens={this.state.inkedPens}
+                {...routerProps} />
+            )
+          }} />
           <Route path={`${path}/inks`} render={routerProps => {
             return (
               <Inks

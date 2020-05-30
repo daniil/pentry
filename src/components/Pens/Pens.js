@@ -29,6 +29,7 @@ class Pens extends Component {
             <div>Finish Name</div>
             <div>Nib Type</div>
             <div>Nib Size</div>
+            <div>Date Acquired</div>
           </li>
           {this.props.pens.map(pen => {
             const penInked = this.checkPenInked(pen);
@@ -40,6 +41,7 @@ class Pens extends Component {
                 <div>{pen.finishName}</div>
                 <div>{pen.nibType}</div>
                 <div>{pen.nibSize}</div>
+                <div>{pen.dateAcquired}</div>
                 {!penInked &&
                   <button onClick={() => this.props.handlePenInking(pen)}>
                     Ink This Pen

@@ -5,7 +5,8 @@ const initState = {
   model: '',
   finishName: '',
   nibType: '',
-  nibSize: ''
+  nibSize: '',
+  dateAcquired: ''
 };
 
 class AddPen extends Component {
@@ -65,6 +66,14 @@ class AddPen extends Component {
             placeholder="Nib Size"
             onChange={this.handleInputChange}
             value={this.state.nibSize} />
+        </div>
+        <div>
+          <input
+            type="date"
+            name="dateAcquired"
+            placeholder="Date Acquired"
+            onChange={this.handleInputChange}
+            value={this.state.dateAcquired} />
         </div>
         <button onClick={this.handleSubmit}>Add</button>
       </form>

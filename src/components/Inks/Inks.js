@@ -18,6 +18,7 @@ class Inks extends Component {
             <div>Size</div>
             <div>Hue</div>
             <div>Properties</div>
+            <div>Date Acquired</div>
           </li>
           {this.props.inks.map(ink => {
             return (
@@ -29,6 +30,7 @@ class Inks extends Component {
                 <div>{ink.size}</div>
                 <div>{ink.hue}</div>
                 <div>{ink.props}</div>
+                <div>{ink.dateAcquired}</div>
               </li>
             );
           })}

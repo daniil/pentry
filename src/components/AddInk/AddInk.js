@@ -7,7 +7,8 @@ const initState = {
   type: '',
   size: '',
   hue: '',
-  props: ''
+  props: '',
+  dateAcquired: ''
 };
 
 class AddInk extends Component {
@@ -83,6 +84,14 @@ class AddInk extends Component {
             placeholder="Properties"
             onChange={this.handleInputChange}
             value={this.state.props} />  
+        </div>
+        <div>
+          <input
+            type="date"
+            name="dateAcquired"
+            placeholder="Date Acquired"
+            onChange={this.handleInputChange}
+            value={this.state.dateAcquired} />  
         </div>
         <button onClick={this.handleSubmit}>Add</button>
       </form>
