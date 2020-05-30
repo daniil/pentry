@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Switch, Route, Link } from 'react-router-dom';
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid';
+import { decryptUser } from '../../utils/userEncryption';
 import Inks from '../../components/Inks';
 import Pens from '../../components/Pens';
 import InkPen from '../../components/InkPen';
@@ -9,7 +10,8 @@ import { PANTRY_API } from '../../App';
 
 class MyPentryPage extends Component {
   state = {
-    user: JSON.parse(localStorage.getItem('loggedInUser')),
+    userToken: JSON.parse(localStorage.getItem('pentry')),
+    username: '',
     inks: [],
     pens: [],
     inkedPens: [],
@@ -17,13 +19,19 @@ class MyPentryPage extends Component {
   }
 
   componentDidMount() {
-    this.state.user
-      ? this.refreshData()
+    this.state.userToken
+      ? this.validateUser()
       : this.props.history.push('/');
   }
 
+  validateUser = () => {
+    const username = decryptUser(this.state.userToken.token);
+    if (!username) return this.handleLogout();
+    this.setState({ username }, this.refreshData);
+  }
+
   handleLogout = () => {
-    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('pentry');
     this.props.history.push('/');
   }
 
@@ -88,7 +96,7 @@ class MyPentryPage extends Component {
 
   updateData = newData => {
     axios({
-      url: `${PANTRY_API}/basket/${this.state.user.username}`,
+      url: `${PANTRY_API}/basket/${this.state.username}`,
       method: 'PUT',
       data: newData
     }).then(() => this.refreshData());
@@ -96,7 +104,7 @@ class MyPentryPage extends Component {
 
   refreshData = () => {
     axios
-      .get(`${PANTRY_API}/basket/${this.state.user.username}`)
+      .get(`${PANTRY_API}/basket/${this.state.username}`)
       .then(res => this.setState({
         inks: res.data.inks,
         pens: res.data.pens,
@@ -107,13 +115,13 @@ class MyPentryPage extends Component {
   render() {
     const { path } = this.props.match;
 
-    if (!this.state.user) return null;
+    if (!this.state.userToken) return null;
 
     return (
       <>
         <p>
           Welcome,&nbsp;
-          <strong>{this.state.user.username}</strong>&nbsp;
+          <strong>{this.state.username}</strong>&nbsp;
           (<Link to="/" onClick={this.handleLogout}>logout</Link>)
         </p>
         <Link to={`${path}`}>

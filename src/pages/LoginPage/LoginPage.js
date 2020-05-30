@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Login from '../../components/Login';
 import Signup from '../../components/Signup';
+import { encryptUser } from '../../utils/userEncryption';
 
 class LoginPage extends Component {
   componentDidMount() {
@@ -8,15 +9,15 @@ class LoginPage extends Component {
   }
 
   handleLogin = username => {
-    localStorage.setItem('loggedInUser', JSON.stringify({
-      username
+    localStorage.setItem('pentry', JSON.stringify({
+      token: encryptUser(username)
     }));
     this.checkUserLoggedIn();
   }
 
   checkUserLoggedIn = () => {
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-    loggedInUser && this.props.history.push('/my-pentry');
+    const token = JSON.parse(localStorage.getItem('pentry'));
+    token && this.props.history.push('/my');
   }
 
   handleSignup = () => {
