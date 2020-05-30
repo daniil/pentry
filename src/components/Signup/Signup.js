@@ -7,12 +7,14 @@ class Signup extends Component {
   state = {
     username: '',
     password: '',
-    passwordRepeat: ''
+    passwordRepeat: '',
+    validationMessage: ''
   }
 
   handleInputChange = e => {
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
+      validationMessage: ''
     });
   }
 
@@ -20,10 +22,23 @@ class Signup extends Component {
     e.preventDefault();
 
     if (this.state.password !== this.state.passwordRepeat) {
-      console.log('Enter same password');
+      this.setState({
+        validationMessage: 'Your passwords do not match'
+      });
       return;
     }
 
+    axios
+      .get(`${PANTRY_API}/basket/${this.state.username}`)
+      .then(
+        () => this.setState({
+          validationMessage: 'This username already exists, please pick another'
+        }),
+        () => this.createUser()
+      );
+  }
+
+  createUser = () => {
     bcrypt.hash(this.state.password, 10, (_, hashedPassword) => {
       axios
         .post(`${PANTRY_API}/basket/${this.state.username}`, {
@@ -59,6 +74,7 @@ class Signup extends Component {
           onChange={this.handleInputChange}
           value={this.state.passwordRepeat} />
         <button onClick={this.handleSubmit}>Signup</button>
+        <p>{this.state.validationMessage}</p>
       </form>
     )
   }
