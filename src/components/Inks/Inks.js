@@ -30,7 +30,7 @@ class Inks extends Component {
                 <div>{ink.size}</div>
                 <div>{ink.hue}</div>
                 <div>{ink.props}</div>
-                <div>{ink.dateAcquired}</div>
+                <div>{ink.dateAcquired.seconds}</div>
               </li>
             );
           })}

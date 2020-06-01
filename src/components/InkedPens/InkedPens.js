@@ -3,15 +3,7 @@ import React, { Component } from 'react';
 class InkedPens extends Component {
   getCurrentlyInked = () => {
     const { inkedPens } = this.props;
-    
-    const inactiveIds = inkedPens
-      .filter(inking => !inking.isActive)
-      .map(inking => inking.id);
-
-    const activeInked = inkedPens
-      .filter(inking => !inactiveIds.includes(inking.id));
-
-    return activeInked;
+    return inkedPens.filter(inking => inking.isActive);
   }
 
   renderPen = penId => {
@@ -20,7 +12,7 @@ class InkedPens extends Component {
 
     return (
       <>{currPen.brand} {currPen.model} {currPen.finishName}</>
-    )
+    );
   }
 
   renderInk = inkId => {
@@ -29,7 +21,7 @@ class InkedPens extends Component {
 
     return (
       <>{currInk.brand} {currInk.inkName} {currInk.colorName}</>
-    )
+    );
   }
 
   render() {
@@ -48,7 +40,7 @@ class InkedPens extends Component {
             return <li key={inking.id}>
               <div>{this.renderPen(inking.penId)}</div>
               <div>{this.renderInk(inking.inkId)}</div>
-              <div>{inking.dateInked}</div>
+              <div>{inking.dateInked.seconds}</div>
             </li>;
           })}
         </ul>

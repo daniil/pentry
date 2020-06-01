@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import bcrypt from 'bcryptjs';
-import axios from 'axios';
-import { PANTRY_API } from '../../App';
+import firebase from 'firebase';
 
 class Signup extends Component {
   state = {
-    username: '',
+    email: '',
     password: '',
     passwordRepeat: '',
     validationMessage: ''
   }
+
+  db = firebase.firestore()
 
   handleInputChange = e => {
     this.setState({
@@ -28,28 +28,26 @@ class Signup extends Component {
       return;
     }
 
-    axios
-      .get(`${PANTRY_API}/basket/${this.state.username}`)
-      .then(
-        () => this.setState({
-          validationMessage: 'This username already exists, please pick another'
-        }),
-        () => this.createUser()
-      );
-  }
-
-  createUser = () => {
-    bcrypt.hash(this.state.password, 10, (_, hashedPassword) => {
-      axios
-        .post(`${PANTRY_API}/basket/${this.state.username}`, {
-          username: this.state.username,
-          password: hashedPassword,
-          inks: [],
-          pens: [],
-          inkedPens: []
-        })
-        .then(() => this.props.handleLogin(this.state.username));
-    });
+    firebase
+      .auth()
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        firebase
+          .auth()
+          .createUserWithEmailAndPassword(this.state.email, this.state.password)
+          .then(res => {
+            this
+              .db
+              .collection('users')
+              .doc(res.user.uid)
+              .set({ email: res.user.email });
+          })
+          .catch(err => {
+            this.setState({
+              validationMessage: err.message
+            });
+          });
+      })
   }
 
   render() {
@@ -57,10 +55,10 @@ class Signup extends Component {
       <form>
         <input
           type="text"
-          name="username"
-          placeholder="Username"
+          name="email"
+          placeholder="Email"
           onChange={this.handleInputChange}
-          value={this.state.username} />
+          value={this.state.email} />
         <input
           type="password"
           name="password"

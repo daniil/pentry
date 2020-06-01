@@ -3,16 +3,9 @@ import AddPen from '../AddPen';
 
 class Pens extends Component {
   checkPenInked = pen => {
-    const inkedHistory = this.props.inkedPens.filter(inkedPen => {
-      return inkedPen.penId === pen.id;
+    return this.props.inkedPens.find(inkedPen => {
+      return inkedPen.penId === pen.id && inkedPen.isActive;
     });
-
-    if (!inkedHistory.length) return false;
-    
-    if (inkedHistory.length && !inkedHistory[inkedHistory.length - 1].isActive)
-      return false;
-    
-    return inkedHistory[inkedHistory.length - 1];
   }
 
   render() {
@@ -41,7 +34,7 @@ class Pens extends Component {
                 <div>{pen.finishName}</div>
                 <div>{pen.nibType}</div>
                 <div>{pen.nibSize}</div>
-                <div>{pen.dateAcquired}</div>
+                <div>{pen.dateAcquired.seconds}</div>
                 {!penInked &&
                   <button onClick={() => this.props.handlePenInking(pen)}>
                     Ink This Pen

@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import bcrypt from 'bcryptjs';
-import axios from 'axios';
-import { PANTRY_API } from '../../App';
+import firebase from 'firebase/app';
 
 class Login extends Component {
   state = {
-    username: '',
-    password: ''
+    email: '',
+    password: '',
+    validationMessage: ''
   }
 
   handleInputChange = e => {
@@ -17,18 +16,17 @@ class Login extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    axios
-      .get(`${PANTRY_API}/basket/${this.state.username}`)
-      .then(res => {
-        bcrypt.compare(this.state.password, res.data.password, (_, passwordMatch) => {
-          if (passwordMatch) {
-            this.props.handleLogin(res.data.username);
-          } else {
-            throw(new Error('Username and password dont match'));
-          }
-        });
-      }, () => console.log('Please signup, user cant be found'))
-      .catch(err => console.log(err));
+    firebase
+      .auth()
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+      .then(() => {
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(this.state.email, this.state.password)
+          .catch(err => this.setState({
+            validationMessage: err.message
+          }));
+      });
   }
 
   render() {
@@ -36,10 +34,10 @@ class Login extends Component {
       <form>
         <input
           type="text"
-          name="username"
-          placeholder="Username"
+          name="email"
+          placeholder="Email"
           onChange={this.handleInputChange}
-          value={this.state.username} />
+          value={this.state.email} />
         <input
           type="password"
           name="password"
@@ -47,6 +45,7 @@ class Login extends Component {
           onChange={this.handleInputChange}
           value={this.state.password} />
         <button onClick={this.handleSubmit}>Login</button>
+        <p>{this.state.validationMessage}</p>
       </form>
     )
   }

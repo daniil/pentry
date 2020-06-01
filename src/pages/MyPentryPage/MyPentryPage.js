@@ -1,128 +1,132 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import { Switch, Route, Link } from 'react-router-dom';
-import { nanoid } from 'nanoid';
-import { decryptUser } from '../../utils/userEncryption';
+import firebase from 'firebase/app';
 import Inks from '../../components/Inks';
 import Pens from '../../components/Pens';
 import InkPen from '../../components/InkPen';
 import InkedPens from '../../components/InkedPens';
-import { PANTRY_API } from '../../App';
 
 class MyPentryPage extends Component {
   state = {
-    userToken: JSON.parse(localStorage.getItem('pentry')),
-    username: '',
+    user: null,
     inks: [],
     pens: [],
     inkedPens: [],
     inkPen: null
   }
 
+  db = firebase.firestore()
+
   componentDidMount() {
-    this.state.userToken
-      ? this.validateUser()
-      : this.props.history.push('/');
+    this.firebaseListener = firebase.auth().onAuthStateChanged(user => {
+      user
+        ? this.initUserPentry(user)
+        : this.props.history.push('/');
+    });
   }
 
-  validateUser = () => {
-    const username = decryptUser(this.state.userToken.token);
-    if (!username) return this.handleLogout();
-    this.setState({ username }, this.refreshData);
+  componentWillUnmount() {
+    this.firebaseListener && this.firebaseListener();
+    this.firebaseListener = null;
+    this.snapshotListeners && this.snapshotListeners.map(listener => listener());
+    this.snapshotListeners = null;
+  }
+
+  initUserPentry = user => {
+    this.setState({ user }, () => {
+      this.snapshotListeners = ['inks', 'pens', 'inkedPens']
+        .map(stateKey => {
+          return this
+            .db
+            .collection('users')
+            .doc(this.state.user.uid)
+            .collection(stateKey)
+            .onSnapshot(snapshot => {
+              const snapshotArr = [];
+              snapshot.forEach(doc => snapshotArr.push({
+                id: doc.id,
+                ...doc.data()
+              }))
+              this.setState({
+                [stateKey]: snapshotArr
+              });
+            });
+        });
+    });
   }
 
   handleLogout = () => {
-    localStorage.removeItem('pentry');
-    this.props.history.push('/');
+    firebase.auth().signOut();
   }
 
   handleInkSubmit = inkData => {
-    this.updateData({
-      inks: [
-        {
-          id: nanoid(),
-          dateAdded: Date.now(),
-          ...inkData
-        }
-      ]
-    });
+    this
+      .db
+      .collection('users')
+      .doc(this.state.user.uid)
+      .collection('inks')
+      .add({
+        ...inkData,
+        dateAcquired: firebase.firestore.Timestamp.fromDate(new Date(inkData.dateAcquired)),
+        addedTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
   }
 
   handlePenSubmit = penData => {
-    this.updateData({
-      pens: [
-        {
-          id: nanoid(),
-          dateAdded: Date.now(),
-          ...penData
-        }
-      ]
-    })
+    this
+      .db
+      .collection('users')
+      .doc(this.state.user.uid)
+      .collection('pens')
+      .add({
+        ...penData,
+        dateAcquired: firebase.firestore.Timestamp.fromDate(new Date(penData.dateAcquired)),
+        addedTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
   }
 
   handlePenInking = pen => {
-    this.setState({
-      inkPen: pen
-    });
+    this.setState({ inkPen: pen });
   }
 
   handleInkChoice = (penId, inkId) => {
-    this.updateData({
-      inkedPens: [
-        {
-          id: nanoid(),
-          dateInked: Date.now(),
-          penId,
-          inkId,
-          isActive: true
-        }
-      ]
-    });
-    this.setState({
-      inkPen: null
-    });
+    this
+      .db
+      .collection('users')
+      .doc(this.state.user.uid)
+      .collection('inkedPens')
+      .add({
+        penId,
+        inkId,
+        dateInked: firebase.firestore.FieldValue.serverTimestamp(),
+        isActive: true 
+      })
+      .then(() => this.setState({ inkPen: null }));
   }
 
   handlePenCleaning = pen => {
-    this.updateData({
-      inkedPens: [
-        {
-          ...pen,
-          isActive: false,
-          dateCleaned: Date.now()
-        }
-      ]
-    });
-  }
-
-  updateData = newData => {
-    axios({
-      url: `${PANTRY_API}/basket/${this.state.username}`,
-      method: 'PUT',
-      data: newData
-    }).then(() => this.refreshData());
-  }
-
-  refreshData = () => {
-    axios
-      .get(`${PANTRY_API}/basket/${this.state.username}`)
-      .then(res => this.setState({
-        inks: res.data.inks,
-        pens: res.data.pens,
-        inkedPens: res.data.inkedPens
-      }));
+    this
+      .db
+      .collection('users')
+      .doc(this.state.user.uid)
+      .collection('inkedPens')
+      .doc(pen.id)
+      .update({
+        isActive: false,
+        dateCleaned: firebase.firestore.FieldValue.serverTimestamp()
+      });
   }
 
   render() {
     const { path } = this.props.match;
 
-    if (!this.state.userToken) return null;
+    if (!this.state.user) return null;
 
     return (
       <>
         <p>
           Welcome,&nbsp;
-          <strong>{this.state.username}</strong>&nbsp;
+          <strong>{this.state.user.email}</strong>&nbsp;
           (<Link to="/" onClick={this.handleLogout}>logout</Link>)
         </p>
         <Link to={`${path}`}>

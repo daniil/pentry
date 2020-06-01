@@ -1,35 +1,28 @@
 import React, { Component } from 'react';
+import firebase from 'firebase/app';
 import Login from '../../components/Login';
 import Signup from '../../components/Signup';
-import { encryptUser } from '../../utils/userEncryption';
 
 class LoginPage extends Component {
   componentDidMount() {
-    this.checkUserLoggedIn();
+    this.firebaseListener = firebase.auth().onAuthStateChanged(user => {
+      user
+        ? this.props.history.push('/my')
+        : this.props.history.push('/');
+    });
   }
 
-  handleLogin = username => {
-    localStorage.setItem('pentry', JSON.stringify({
-      token: encryptUser(username)
-    }));
-    this.checkUserLoggedIn();
+  componentWillUnmount() {
+    this.firebaseListener && this.firebaseListener();
+    this.firebaseListener = null;
   }
 
-  checkUserLoggedIn = () => {
-    const token = JSON.parse(localStorage.getItem('pentry'));
-    token && this.props.history.push('/my');
-  }
-
-  handleSignup = () => {
-    this.props.history.push('/')
-  }
-  
   render() {
     return (
       <>
-        <Login handleLogin={this.handleLogin} />
+        <Login />
         - or -
-        <Signup handleLogin={this.handleLogin} />
+        <Signup />
       </>
     )
   }
