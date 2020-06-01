@@ -1,22 +1,19 @@
 {
   "files": {
-    "main.css": "/pentry/static/css/main.5ecd60fb.chunk.css",
-    "main.js": "/pentry/static/js/main.4f5ca7ba.chunk.js",
-    "main.js.map": "/pentry/static/js/main.4f5ca7ba.chunk.js.map",
+    "main.js": "/pentry/static/js/main.128fa219.chunk.js",
+    "main.js.map": "/pentry/static/js/main.128fa219.chunk.js.map",
     "runtime-main.js": "/pentry/static/js/runtime-main.f5ba1f6c.js",
     "runtime-main.js.map": "/pentry/static/js/runtime-main.f5ba1f6c.js.map",
-    "static/js/2.76d246a4.chunk.js": "/pentry/static/js/2.76d246a4.chunk.js",
-    "static/js/2.76d246a4.chunk.js.map": "/pentry/static/js/2.76d246a4.chunk.js.map",
+    "static/js/2.8476a1e0.chunk.js": "/pentry/static/js/2.8476a1e0.chunk.js",
+    "static/js/2.8476a1e0.chunk.js.map": "/pentry/static/js/2.8476a1e0.chunk.js.map",
     "index.html": "/pentry/index.html",
-    "precache-manifest.9be20d1cc714f0c52002e35f2f86137d.js": "/pentry/precache-manifest.9be20d1cc714f0c52002e35f2f86137d.js",
+    "precache-manifest.8af43795abdaf6f3ecf50a27af2c4e17.js": "/pentry/precache-manifest.8af43795abdaf6f3ecf50a27af2c4e17.js",
     "service-worker.js": "/pentry/service-worker.js",
-    "static/css/main.5ecd60fb.chunk.css.map": "/pentry/static/css/main.5ecd60fb.chunk.css.map",
-    "static/js/2.76d246a4.chunk.js.LICENSE.txt": "/pentry/static/js/2.76d246a4.chunk.js.LICENSE.txt"
+    "static/js/2.8476a1e0.chunk.js.LICENSE.txt": "/pentry/static/js/2.8476a1e0.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.f5ba1f6c.js",
-    "static/js/2.76d246a4.chunk.js",
-    "static/css/main.5ecd60fb.chunk.css",
-    "static/js/main.4f5ca7ba.chunk.js"
+    "static/js/2.8476a1e0.chunk.js",
+    "static/js/main.128fa219.chunk.js"
   ]
 }
