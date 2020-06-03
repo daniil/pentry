@@ -162,6 +162,7 @@ class MyPentryPage extends Component {
             return (
               <Pens
                 pens={this.state.pens}
+                inks={this.state.inks}
                 inkedPens={this.state.inkedPens}
                 handleSubmit={this.handlePenSubmit}
                 handlePenInking={this.handlePenInking}
@@ -174,6 +175,7 @@ class MyPentryPage extends Component {
           <InkPen
             pen={this.state.inkPen}
             inks={this.state.inks}
+            inkedPens={this.state.inkedPens}
             handleInkChoice={this.handleInkChoice} />}
       </>
     )

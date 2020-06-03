@@ -11,24 +11,33 @@ class InkPen extends Component {
     });
   }
 
+  inkUseCount = ink => {
+    const { inkedPens } = this.props;
+    return inkedPens.filter(inkedPen => {
+      return inkedPen.isActive && inkedPen.inkId === ink.id;
+    }).length;
+  }
+
   render() {
-    const { brand, model } = this.props.pen;
+    const { pen: { brand, model }, inks, handleInkChoice } = this.props;
 
     return (
       <>
         <p>{brand} {model}</p>
         <select onChange={this.handleInkChange} value={this.state.inkChoice}>
           <option value=""></option>
-          {this.props.inks.map(ink => {
+          {inks.map(ink => {
+            const useCount = this.inkUseCount(ink);
             return (
               <option key={ink.id} value={ink.id}>
                 {ink.brand} {ink.inkName} {ink.colorName}
+                {!!useCount && `(${useCount})`}
               </option>
             );
           })}
         </select>
         <button
-          onClick={() => this.props.handleInkChoice(this.props.pen.id, this.state.inkChoice)}>
+          onClick={() => handleInkChoice(this.props.pen.id, this.state.inkChoice)}>
           Use This Ink
         </button>
       </>
