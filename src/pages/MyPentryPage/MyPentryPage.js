@@ -5,6 +5,7 @@ import Inks from '../../components/Inks';
 import Pens from '../../components/Pens';
 import InkPen from '../../components/InkPen';
 import InkedPens from '../../components/InkedPens';
+import { firebaseFromDate, firebaseTimestamp } from '../../utils/formatDate';
 
 class MyPentryPage extends Component {
   state = {
@@ -59,17 +60,25 @@ class MyPentryPage extends Component {
     firebase.auth().signOut();
   }
 
-  handleInkSubmit = inkData => {
-    this
-      .db
-      .collection('users')
-      .doc(this.state.user.uid)
-      .collection('inks')
-      .add({
-        ...inkData,
-        dateAcquired: firebase.firestore.Timestamp.fromDate(new Date(inkData.dateAcquired)),
-        addedTimestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
+  handleInkSubmit = (inkData, isUpdate) => {
+    const inksCollection = this.db.collection('users').doc(this.state.user.uid).collection('inks');
+
+    if (isUpdate) {
+      inksCollection
+        .doc(inkData.id)
+        .update({
+          ...inkData,
+          dateAcquired: firebaseFromDate(inkData.dateAcquired),
+          updatedTimestamp: firebaseTimestamp()
+        });
+    } else {
+      inksCollection
+        .add({
+          ...inkData,
+          dateAcquired: firebaseFromDate(inkData.dateAcquired),
+          addedTimestamp: firebaseTimestamp()
+        });
+    }
   }
 
   handlePenSubmit = penData => {
@@ -81,7 +90,7 @@ class MyPentryPage extends Component {
       .add({
         ...penData,
         dateAcquired: firebase.firestore.Timestamp.fromDate(new Date(penData.dateAcquired)),
-        addedTimestamp: firebase.firestore.FieldValue.serverTimestamp()
+        addedTimestamp: firebaseTimestamp()
       });
   }
 
@@ -98,7 +107,7 @@ class MyPentryPage extends Component {
       .add({
         penId,
         inkId,
-        dateInked: firebase.firestore.FieldValue.serverTimestamp(),
+        dateInked: firebaseTimestamp(),
         isActive: true 
       })
       .then(() => this.setState({ inkPen: null }));
@@ -113,7 +122,7 @@ class MyPentryPage extends Component {
       .doc(pen.id)
       .update({
         isActive: false,
-        dateCleaned: firebase.firestore.FieldValue.serverTimestamp()
+        dateCleaned: firebaseTimestamp()
       });
   }
 
@@ -155,6 +164,7 @@ class MyPentryPage extends Component {
               <Inks
                 inks={this.state.inks}
                 handleSubmit={this.handleInkSubmit}
+                handleEditInk={this.handleEditInk}
                 {...routerProps} />
             )
           }} />

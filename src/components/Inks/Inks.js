@@ -2,13 +2,30 @@ import React, { Component } from 'react';
 import AddInk from '../AddInk';
 
 class Inks extends Component {
+  state = {
+    selectedInk: null
+  }
+
+  handleInkSelect = ink => {
+    this.setState({ selectedInk: ink });
+  }
+
+  handleSubmit = (inkData, isUpdate) => {
+    if (isUpdate) this.setState({ selectedInk: null });
+    this.props.handleSubmit(inkData, isUpdate);
+  }
+
   render() {
+    const { inks } =  this.props;
+
     return (
       <>
         <h2>My Inks</h2>
         <ul>
           <li>
-            <AddInk handleSubmit={this.props.handleSubmit} />
+            <AddInk
+              selectedInk={this.state.selectedInk}
+              handleSubmit={this.handleSubmit} />
           </li>
           <li>
             <div>Brand</div>
@@ -20,7 +37,8 @@ class Inks extends Component {
             <div>Properties</div>
             <div>Date Acquired</div>
           </li>
-          {this.props.inks.map(ink => {
+          {
+          inks.map(ink => {
             return (
               <li key={ink.id}>
                 <div>{ink.brand}</div>
@@ -31,6 +49,7 @@ class Inks extends Component {
                 <div>{ink.hue}</div>
                 <div>{ink.props}</div>
                 <div>{ink.dateAcquired.seconds}</div>
+                <button onClick={() => this.handleInkSelect(ink)}>Edit</button>
               </li>
             );
           })}

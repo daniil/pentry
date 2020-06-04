@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { formatDay } from '../../utils/formatDate';
 
 const initState = {
+  id: null,
   brand: '',
   inkName: '',
   colorName: '',
@@ -14,6 +16,19 @@ const initState = {
 class AddInk extends Component {
   state = initState
 
+  componentDidUpdate(prevProps) {
+    if (this.newInkDataPassed(prevProps)) {
+      const { selectedInk: {
+        id, brand, inkName, colorName, type, size, hue, props, dateAcquired
+      } } = this.props;
+
+      this.setState({
+        id, brand, inkName, colorName, type, size, hue, props,
+        dateAcquired: formatDay(dateAcquired.seconds)
+      });
+    }
+  }
+
   handleInputChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -22,8 +37,14 @@ class AddInk extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.handleSubmit(this.state);
+    this.props.handleSubmit(this.state, !!this.props.selectedInk);
     this.setState(initState);
+  }
+
+  newInkDataPassed = prevProps => {
+    return this.props.selectedInk &&
+      (!prevProps.selectedInk ||
+      prevProps.selectedInk.id !== this.props.selectedInk.id);
   }
 
   render() {
