@@ -37,7 +37,7 @@ class AddInk extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.handleSubmit(this.state, !!this.props.selectedInk);
+    this.props.handleSubmit(this.cleanSubmitData(), !!this.props.selectedInk);
     this.setState(initState);
   }
 
@@ -45,6 +45,12 @@ class AddInk extends Component {
     return this.props.selectedInk &&
       (!prevProps.selectedInk ||
       prevProps.selectedInk.id !== this.props.selectedInk.id);
+  }
+
+  cleanSubmitData = () => {
+    if (this.state.id) return this.state;
+    const { id, ...cleanState } = this.state;
+    return cleanState;
   }
 
   render() {

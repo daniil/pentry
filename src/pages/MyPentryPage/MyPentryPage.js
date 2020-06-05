@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
-import firebase from 'firebase/app';
 import Inks from '../../components/Inks';
 import Pens from '../../components/Pens';
 import InkPen from '../../components/InkPen';
 import InkedPens from '../../components/InkedPens';
-import { firebaseFromDate, firebaseTimestamp } from '../../utils/formatDate';
+import firebaseStore from '../../utils/firebaseStore';
 
 class MyPentryPage extends Component {
   state = {
@@ -16,82 +15,42 @@ class MyPentryPage extends Component {
     inkPen: null
   }
 
-  db = firebase.firestore()
-
   componentDidMount() {
-    this.firebaseListener = firebase.auth().onAuthStateChanged(user => {
-      user
-        ? this.initUserPentry(user)
-        : this.props.history.push('/');
-    });
+    firebaseStore.addAuthListener().then(
+      this.initUserPentry,
+      () => this.props.history.push('/')
+    );
   }
 
   componentWillUnmount() {
-    this.firebaseListener && this.firebaseListener();
-    this.firebaseListener = null;
-    this.snapshotListeners && this.snapshotListeners.map(listener => listener());
-    this.snapshotListeners = null;
+    firebaseStore.removeAuthListener();
+    firebaseStore.removeSnapshotListeners();
   }
 
+  userId = () => this.state.user.uid
+
   initUserPentry = user => {
-    this.setState({ user }, () => {
-      this.snapshotListeners = ['inks', 'pens', 'inkedPens']
-        .map(stateKey => {
-          return this
-            .db
-            .collection('users')
-            .doc(this.state.user.uid)
-            .collection(stateKey)
-            .onSnapshot(snapshot => {
-              const snapshotArr = [];
-              snapshot.forEach(doc => snapshotArr.push({
-                id: doc.id,
-                ...doc.data()
-              }))
-              this.setState({
-                [stateKey]: snapshotArr
-              });
-            });
-        });
-    });
+    this.setState(
+      { user },
+      () => firebaseStore.addSnapshotListeners(
+        this.userId(),
+        data => this.setState(data)
+      )
+    );
   }
 
   handleLogout = () => {
-    firebase.auth().signOut();
+    firebaseStore.logout();
   }
 
   handleInkSubmit = (inkData, isUpdate) => {
-    const inksCollection = this.db.collection('users').doc(this.state.user.uid).collection('inks');
-
-    if (isUpdate) {
-      inksCollection
-        .doc(inkData.id)
-        .update({
-          ...inkData,
-          dateAcquired: firebaseFromDate(inkData.dateAcquired),
-          updatedTimestamp: firebaseTimestamp()
-        });
-    } else {
-      inksCollection
-        .add({
-          ...inkData,
-          dateAcquired: firebaseFromDate(inkData.dateAcquired),
-          addedTimestamp: firebaseTimestamp()
-        });
-    }
+    isUpdate
+      ? firebaseStore.updateInk(this.userId(), inkData)
+      : firebaseStore.addInk(this.userId(), inkData);
   }
 
   handlePenSubmit = penData => {
-    this
-      .db
-      .collection('users')
-      .doc(this.state.user.uid)
-      .collection('pens')
-      .add({
-        ...penData,
-        dateAcquired: firebase.firestore.Timestamp.fromDate(new Date(penData.dateAcquired)),
-        addedTimestamp: firebaseTimestamp()
-      });
+    firebaseStore.addPen(this.userId(), penData);
   }
 
   handlePenInking = pen => {
@@ -99,31 +58,14 @@ class MyPentryPage extends Component {
   }
 
   handleInkChoice = (penId, inkId) => {
-    this
-      .db
-      .collection('users')
-      .doc(this.state.user.uid)
-      .collection('inkedPens')
-      .add({
-        penId,
-        inkId,
-        dateInked: firebaseTimestamp(),
-        isActive: true 
-      })
+    firebaseStore
+      .inkPen(this.userId(), penId, inkId)
       .then(() => this.setState({ inkPen: null }));
   }
 
-  handlePenCleaning = pen => {
-    this
-      .db
-      .collection('users')
-      .doc(this.state.user.uid)
-      .collection('inkedPens')
-      .doc(pen.id)
-      .update({
-        isActive: false,
-        dateCleaned: firebaseTimestamp()
-      });
+  handlePenCleaning = inkPen => {
+    firebaseStore
+      .cleanPen(this.userId(), inkPen.id);
   }
 
   render() {
