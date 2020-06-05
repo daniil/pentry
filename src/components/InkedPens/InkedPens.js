@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { formatDay } from '../../utils/formatDate';
 
 class InkedPens extends Component {
   getCurrentlyInked = () => {
@@ -40,7 +41,7 @@ class InkedPens extends Component {
             return <li key={inking.id}>
               <div>{this.renderPen(inking.penId)}</div>
               <div>{this.renderInk(inking.inkId)}</div>
-              <div>{inking.dateInked.seconds}</div>
+              <div>{formatDay(inking.dateInked.seconds)}</div>
             </li>;
           })}
         </ul>

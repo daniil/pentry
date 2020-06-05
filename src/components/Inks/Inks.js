@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AddInk from '../AddInk';
+import { formatDay } from '../../utils/formatDate';
 
 class Inks extends Component {
   state = {
@@ -48,7 +49,7 @@ class Inks extends Component {
                 <div>{ink.size}</div>
                 <div>{ink.hue}</div>
                 <div>{ink.props}</div>
-                <div>{ink.dateAcquired.seconds}</div>
+                <div>{formatDay(ink.dateAcquired.seconds)}</div>
                 <button onClick={() => this.handleInkSelect(ink)}>Edit</button>
               </li>
             );

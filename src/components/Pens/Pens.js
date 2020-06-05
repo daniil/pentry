@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import AddPen from '../AddPen';
+import { formatDay } from '../../utils/formatDate';
 
 class Pens extends Component {
   checkPenInked = pen => {
@@ -42,7 +43,7 @@ class Pens extends Component {
                 <div>{pen.finishName}</div>
                 <div>{pen.nibType}</div>
                 <div>{pen.nibSize}</div>
-                <div>{pen.dateAcquired.seconds}</div>
+                <div>{formatDay(pen.dateAcquired.seconds)}</div>
                 {!penInked &&
                   <button onClick={() => handlePenInking(pen)}>
                     Ink This Pen
