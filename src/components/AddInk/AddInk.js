@@ -120,7 +120,9 @@ class AddInk extends Component {
             onChange={this.handleInputChange}
             value={this.state.dateAcquired} />  
         </div>
-        <button onClick={this.handleSubmit}>Add</button>
+        <button onClick={this.handleSubmit}>
+          {this.props.selectedInk ? 'Update' : 'Add'}
+        </button>
       </form>
     )
   }

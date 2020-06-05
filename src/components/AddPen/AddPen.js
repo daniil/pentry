@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import { formatDay } from '../../utils/formatDate';
 
 const initState = {
+  id: null,
   brand: '',
   model: '',
   finishName: '',
@@ -12,6 +14,19 @@ const initState = {
 class AddPen extends Component {
   state = initState
 
+  componentDidUpdate(prevProps) {
+    if (this.newPenDataPassed(prevProps)) {
+      const { selectedPen: {
+        id, brand, model, finishName, nibType, nibSize, dateAcquired
+      } } = this.props;
+
+      this.setState({
+        id, brand, model, finishName, nibType, nibSize,
+        dateAcquired: formatDay(dateAcquired.seconds)
+      });
+    }
+  }
+
   handleInputChange = e => {
     this.setState({
       [e.target.name]: e.target.value
@@ -20,8 +35,20 @@ class AddPen extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.handleSubmit(this.state);
+    this.props.handleSubmit(this.cleanSubmitData(), !!this.props.selectedPen);
     this.setState(initState);
+  }
+
+  newPenDataPassed = prevProps => {
+    return this.props.selectedPen &&
+      (!prevProps.selectedPen ||
+      prevProps.selectedPen.id !== this.props.selectedPen.id);
+  }
+
+  cleanSubmitData = () => {
+    if (this.state.id) return this.state;
+    const { id, ...cleanState } = this.state;
+    return cleanState;
   }
 
   render() {
@@ -75,7 +102,9 @@ class AddPen extends Component {
             onChange={this.handleInputChange}
             value={this.state.dateAcquired} />
         </div>
-        <button onClick={this.handleSubmit}>Add</button>
+        <button onClick={this.handleSubmit}>
+          {this.props.selectedPen ? 'Update' : 'Add'}
+        </button>
       </form>
     )
   }

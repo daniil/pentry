@@ -59,7 +59,8 @@ const addInk = (userId, inkData) => {
     .add({
       ...inkData,
       dateAcquired: firebaseFromDate(inkData.dateAcquired),
-      addedTimestamp: firebaseTimestamp()
+      addedTimestamp: firebaseTimestamp(),
+      isActive: true
     });
 }
 
@@ -82,8 +83,19 @@ const addPen = (userId, penData) => {
     .add({
     ...penData,
     dateAcquired: firebaseFromDate(penData.dateAcquired),
-    addedTimestamp: firebaseTimestamp()
+    addedTimestamp: firebaseTimestamp(),
+    isActive: true
   });
+}
+
+const updatePen = (userId, penData) => {
+  pensCollection(userId)
+    .doc(penData.id)
+    .update({
+      ...penData,
+      dateAcquired: firebaseFromDate(penData.dateAcquired),
+      updatedTimestamp: firebaseTimestamp()
+    });
 }
 
 const inkedPensCollection = userId => {
@@ -125,6 +137,7 @@ export default {
   addInk,
   updateInk,
   addPen,
+  updatePen,
   inkPen,
   cleanPen,
   logout

@@ -3,6 +3,19 @@ import AddPen from '../AddPen';
 import { formatDay } from '../../utils/formatDate';
 
 class Pens extends Component {
+  state = {
+    selectedPen: null
+  }
+
+  handlePenSelect = pen => {
+    this.setState({ selectedPen: pen });
+  }
+
+  handleSubmit = (penData, isUpdate) => {
+    if (isUpdate) this.setState({ selectedPen: null });
+    this.props.handleSubmit(penData, isUpdate);
+  }
+
   checkPenInked = pen => {
     return this.props.inkedPens.find(inkedPen => {
       return inkedPen.penId === pen.id && inkedPen.isActive;
@@ -22,7 +35,9 @@ class Pens extends Component {
         <h2>My Pens</h2>
         <ul>
           <li>
-            <AddPen handleSubmit={handleSubmit} />
+            <AddPen 
+              selectedPen={this.state.selectedPen}
+              handleSubmit={handleSubmit} />
           </li>
           <li>
             <div>Brand</div>
@@ -44,6 +59,7 @@ class Pens extends Component {
                 <div>{pen.nibType}</div>
                 <div>{pen.nibSize}</div>
                 <div>{formatDay(pen.dateAcquired.seconds)}</div>
+                <button onClick={() => this.handlePenSelect(pen)}>Edit</button>
                 {!penInked &&
                   <button onClick={() => handlePenInking(pen)}>
                     Ink This Pen

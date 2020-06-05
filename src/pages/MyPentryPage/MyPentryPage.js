@@ -49,8 +49,10 @@ class MyPentryPage extends Component {
       : firebaseStore.addInk(this.userId(), inkData);
   }
 
-  handlePenSubmit = penData => {
-    firebaseStore.addPen(this.userId(), penData);
+  handlePenSubmit = (penData, isUpdate) => {
+    isUpdate
+      ? firebaseStore.updatePen(this.userId(), penData)
+      : firebaseStore.addPen(this.userId(), penData);
   }
 
   handlePenInking = pen => {
@@ -106,7 +108,6 @@ class MyPentryPage extends Component {
               <Inks
                 inks={this.state.inks}
                 handleSubmit={this.handleInkSubmit}
-                handleEditInk={this.handleEditInk}
                 {...routerProps} />
             )
           }} />
