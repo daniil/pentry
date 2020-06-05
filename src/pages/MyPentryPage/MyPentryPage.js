@@ -49,10 +49,18 @@ class MyPentryPage extends Component {
       : firebaseStore.addInk(this.userId(), inkData);
   }
 
+  handleInkRemove = inkId => {
+    firebaseStore.removeInk(this.userId(), inkId);
+  }
+
   handlePenSubmit = (penData, isUpdate) => {
     isUpdate
       ? firebaseStore.updatePen(this.userId(), penData)
       : firebaseStore.addPen(this.userId(), penData);
+  }
+
+  handlePenRemove = penId => {
+    firebaseStore.removePen(this.userId(), penId);
   }
 
   handlePenInking = pen => {
@@ -108,6 +116,7 @@ class MyPentryPage extends Component {
               <Inks
                 inks={this.state.inks}
                 handleSubmit={this.handleInkSubmit}
+                handleRemove={this.handleInkRemove}
                 {...routerProps} />
             )
           }} />
@@ -118,8 +127,9 @@ class MyPentryPage extends Component {
                 inks={this.state.inks}
                 inkedPens={this.state.inkedPens}
                 handleSubmit={this.handlePenSubmit}
-                handlePenInking={this.handlePenInking}
-                handlePenCleaning={this.handlePenCleaning}
+                handleRemove={this.handlePenRemove}
+                handleInking={this.handlePenInking}
+                handleCleaning={this.handlePenCleaning}
                 {...routerProps} />
             )
           }} />

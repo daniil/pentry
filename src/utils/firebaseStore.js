@@ -74,6 +74,15 @@ const updateInk = (userId, inkData) => {
     });
 }
 
+const removeInk = (userId, inkId) => {
+  inksCollection(userId)
+    .doc(inkId)
+    .update({
+      isActive: false,
+      removedTimestamp: firebaseTimestamp()
+    });
+}
+
 const pensCollection = userId => {
   return db.collection('users').doc(userId).collection('pens');
 }
@@ -95,6 +104,15 @@ const updatePen = (userId, penData) => {
       ...penData,
       dateAcquired: firebaseFromDate(penData.dateAcquired),
       updatedTimestamp: firebaseTimestamp()
+    });
+}
+
+const removePen = (userId, penId) => {
+  pensCollection(userId)
+    .doc(penId)
+    .update({
+      isActive: false,
+      removedTimestamp: firebaseTimestamp()
     });
 }
 
@@ -136,8 +154,10 @@ export default {
   removeSnapshotListeners,
   addInk,
   updateInk,
+  removeInk,
   addPen,
   updatePen,
+  removePen,
   inkPen,
   cleanPen,
   logout

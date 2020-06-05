@@ -17,7 +17,8 @@ class Inks extends Component {
   }
 
   render() {
-    const { inks } =  this.props;
+    const { inks, handleRemove } =  this.props;
+    const activeInks = inks.filter(ink => ink.isActive);
 
     return (
       <>
@@ -39,7 +40,7 @@ class Inks extends Component {
             <div>Date Acquired</div>
           </li>
           {
-          inks.map(ink => {
+          activeInks.map(ink => {
             return (
               <li key={ink.id}>
                 <div>{ink.brand}</div>
@@ -51,6 +52,7 @@ class Inks extends Component {
                 <div>{ink.props}</div>
                 <div>{formatDay(ink.dateAcquired.seconds)}</div>
                 <button onClick={() => this.handleInkSelect(ink)}>Edit</button>
+                <button onClick={() => handleRemove(ink.id)}>Remove</button>
               </li>
             );
           })}

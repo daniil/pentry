@@ -24,11 +24,18 @@ class Pens extends Component {
 
   displayInk = penInked => {
     const currInk = this.props.inks.find(ink => ink.id === penInked.inkId);
-    return `${currInk.brand} ${currInk.inkName} ${currInk.colorName}`;
+    return `${currInk.brand} ${currInk.inkName} ${currInk.colorName} ${!currInk.isActive && '(retired)'}`;
   }
 
   render() {
-    const { pens, handleSubmit, handlePenInking, handlePenCleaning} = this.props;
+    const {
+      pens,
+      handleSubmit,
+      handleRemove,
+      handleInking,
+      handleCleaning
+    } = this.props;
+    const activePens = pens.filter(pen => pen.isActive);
 
     return (
       <>
@@ -48,7 +55,7 @@ class Pens extends Component {
             <div>Date Acquired</div>
             <div>Inked With</div>
           </li>
-          {pens.map(pen => {
+          {activePens.map(pen => {
             const penInked = this.checkPenInked(pen);
 
             return (
@@ -60,14 +67,15 @@ class Pens extends Component {
                 <div>{pen.nibSize}</div>
                 <div>{formatDay(pen.dateAcquired.seconds)}</div>
                 <button onClick={() => this.handlePenSelect(pen)}>Edit</button>
+                <button onClick={() => handleRemove(pen.id)}>Remove</button>
                 {!penInked &&
-                  <button onClick={() => handlePenInking(pen)}>
+                  <button onClick={() => handleInking(pen)}>
                     Ink This Pen
                   </button>}
                 {penInked &&
                   <>
                     <div>{this.displayInk(penInked)}</div>
-                    <button onClick={() => handlePenCleaning(penInked)}>
+                    <button onClick={() => handleCleaning(penInked)}>
                       Clean This Pen
                     </button>
                   </>}
