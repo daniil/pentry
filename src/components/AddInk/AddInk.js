@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AutosuggestField from '../AutosuggestField';
 import { formatDay } from '../../utils/formatDate';
 
 const initState = {
@@ -35,6 +36,12 @@ class AddInk extends Component {
     });
   }
 
+  handleFieldChange = fieldVal => {
+    this.setState({
+      [fieldVal.key]: fieldVal.value
+    });
+  }
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.handleSubmit(this.cleanSubmitData(), !!this.props.selectedInk);
@@ -56,14 +63,11 @@ class AddInk extends Component {
   render() {
     return (
       <form>
-        <div>
-          <input
-            type="text"
-            name="brand"
-            placeholder="Brand"
-            onChange={this.handleInputChange}
-            value={this.state.brand} />
-        </div>
+        <AutosuggestField
+          label="Brand"
+          type="ink:brand"
+          value={this.state.brand}
+          onChange={this.handleFieldChange} />
         <div>
           <input
             type="text"
