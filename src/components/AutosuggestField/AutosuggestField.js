@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
+import firebaseStore from '../../utils/firebaseStore';
 
 const AutosuggestField = ({ label, onChange, type, value }) => {
   const [fieldValue, setFieldValue] = useState(value || '');
   const [valueListVisible, setValueListVisible] = useState(false);
-  const mockData = JSON.stringify([
-    { id: 1, value: 'Diamine' },
-    { id: 2, value: 'Kaweco' },
-    { id: 3, value: 'Pilot' }
-  ]);
-  const [valueList, setValueList] = useState(mockData);
+  const [fieldData, setFieldData] = useState('[]');
+  const [valueList, setValueList] = useState([]);
   const [resourceType, resourceName] = type.split(':');
 
   useEffect(() => {
     onChange({ key: resourceType, value: fieldValue });
-    setValueList(JSON.stringify(JSON.parse(mockData).filter(
+    setValueList(JSON.stringify(JSON.parse(fieldData).filter(
       item => fieldValue === '' || item.value.toLowerCase().includes(fieldValue.toLowerCase()))
     ));
-  }, [fieldValue, onChange, resourceType, mockData]);
+  }, [fieldValue, onChange, resourceType, fieldData]);
+
+  useEffect(() => {
+    firebaseStore.addFieldDataListener(type, data => {
+      setFieldData(JSON.stringify(data[type]));
+    });
+    return () => {
+      firebaseStore.removeFieldDataListener(type);
+    }
+  }, [type, fieldData]);
 
   return (
     <div>

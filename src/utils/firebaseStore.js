@@ -8,6 +8,7 @@ import { firebaseFromDate, firebaseTimestamp } from './formatDate';
 let db;
 let firebaseListener;
 let snapshotListeners;
+let fieldDataListeners = {};
 
 const init = () => {
   !firebase.apps.length && firebase.initializeApp(firebaseConfig);
@@ -27,6 +28,17 @@ const removeAuthListener = () => {
   firebaseListener = null;
 }
 
+const handleSnapshot = (key, cb) => {
+  return snapshot => {
+    const snapshotArr = [];
+    snapshot.forEach(doc => snapshotArr.push({
+      id: doc.id,
+      ...doc.data()
+    }));
+    cb({ [key]: snapshotArr });
+  }
+}
+
 const addSnapshotListeners = (userId, cb) => {
   snapshotListeners = ['inks', 'pens', 'inkedPens']
     .map(stateKey => {
@@ -34,14 +46,7 @@ const addSnapshotListeners = (userId, cb) => {
         .collection('users')
         .doc(userId)
         .collection(stateKey)
-        .onSnapshot(snapshot => {
-          const snapshotArr = [];
-          snapshot.forEach(doc => snapshotArr.push({
-            id: doc.id,
-            ...doc.data()
-          }));
-          cb({ [stateKey]: snapshotArr });
-        });
+        .onSnapshot(handleSnapshot(stateKey, cb));
     });
 }
 
@@ -142,6 +147,18 @@ const cleanPen = (userId, inkPenId) => {
     });
 }
 
+const addFieldDataListener = (field, cb) => {
+  fieldDataListeners[field] = db
+    .collection(field)
+    .onSnapshot(handleSnapshot(field, cb));
+}
+
+const removeFieldDataListener = field => {
+  fieldDataListeners[field] && fieldDataListeners[field]();
+  fieldDataListeners[field] = null;
+  delete fieldDataListeners[field];
+}
+
 const logout = () => {
   firebase.auth().signOut();
 }
@@ -160,5 +177,7 @@ export default {
   removePen,
   inkPen,
   cleanPen,
+  addFieldDataListener,
+  removeFieldDataListener,
   logout
 }
