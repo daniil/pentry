@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import firebaseStore from '../../utils/firebaseStore';
+import { sortStringValueAsc } from '../../utils/formatData';
 
 const AutosuggestField = ({ label, onChange, type, value }) => {
   const [fieldValue, setFieldValue] = useState(value || '');
@@ -17,7 +18,7 @@ const AutosuggestField = ({ label, onChange, type, value }) => {
 
   useEffect(() => {
     firebaseStore.addFieldDataListener(type, data => {
-      setFieldData(JSON.stringify(data[type]));
+      setFieldData(JSON.stringify(sortStringValueAsc(data[type], 'value')));
     });
     return () => {
       firebaseStore.removeFieldDataListener(type);
