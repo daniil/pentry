@@ -3,18 +3,16 @@ import firebaseStore from '../../utils/firebaseStore';
 import { sortStringValueAsc } from '../../utils/formatData';
 
 const AutosuggestField = ({ label, onChange, type, value }) => {
-  const [fieldValue, setFieldValue] = useState(value || '');
   const [valueListVisible, setValueListVisible] = useState(false);
   const [fieldData, setFieldData] = useState('[]');
   const [valueList, setValueList] = useState([]);
   const [, resourceName] = type.split(':');
 
   useEffect(() => {
-    onChange({ key: resourceName, value: fieldValue });
     setValueList(JSON.stringify(JSON.parse(fieldData).filter(
-      item => fieldValue === '' || item.value.toLowerCase().includes(fieldValue.toLowerCase()))
+      item => value === '' || item.value.toLowerCase().includes(value.toLowerCase()))
     ));
-  }, [fieldValue, onChange, resourceName, fieldData]);
+  }, [value, onChange, resourceName, fieldData]);
 
   useEffect(() => {
     firebaseStore.addFieldDataListener(type, data => {
@@ -25,21 +23,23 @@ const AutosuggestField = ({ label, onChange, type, value }) => {
     }
   }, [type, fieldData]);
 
+  const handleChange = newValue => onChange({ key: resourceName, value: newValue });
+
   return (
     <div>
       <input
         type="text"
         name={resourceName}
         placeholder={label}
-        onChange={e => setFieldValue(e.target.value)}
+        onChange={e => handleChange(e.target.value)}
         onFocus={() => setValueListVisible(true)}
         onBlur={() => setValueListVisible(false)}
-        value={fieldValue}
+        value={value}
         autoComplete="off" />
       {valueListVisible && JSON.parse(valueList).map(valueItem => {
         return <div
           key={valueItem.id}
-          onMouseDown={() => setFieldValue(valueItem.value)}>
+          onMouseDown={() => handleChange(valueItem.value)}>
           {valueItem.value}
         </div>;
       })}
