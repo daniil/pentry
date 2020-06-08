@@ -7,14 +7,14 @@ const AutosuggestField = ({ label, onChange, type, value }) => {
   const [valueListVisible, setValueListVisible] = useState(false);
   const [fieldData, setFieldData] = useState('[]');
   const [valueList, setValueList] = useState([]);
-  const [resourceType, resourceName] = type.split(':');
+  const [, resourceName] = type.split(':');
 
   useEffect(() => {
-    onChange({ key: resourceType, value: fieldValue });
+    onChange({ key: resourceName, value: fieldValue });
     setValueList(JSON.stringify(JSON.parse(fieldData).filter(
       item => fieldValue === '' || item.value.toLowerCase().includes(fieldValue.toLowerCase()))
     ));
-  }, [fieldValue, onChange, resourceType, fieldData]);
+  }, [fieldValue, onChange, resourceName, fieldData]);
 
   useEffect(() => {
     firebaseStore.addFieldDataListener(type, data => {

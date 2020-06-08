@@ -67,6 +67,7 @@ const addInk = (userId, inkData) => {
       addedTimestamp: firebaseTimestamp(),
       isActive: true
     });
+  addFieldData('ink', inkData);
 }
 
 const updateInk = (userId, inkData) => {
@@ -157,6 +158,22 @@ const removeFieldDataListener = field => {
   fieldDataListeners[field] && fieldDataListeners[field]();
   fieldDataListeners[field] = null;
   delete fieldDataListeners[field];
+}
+
+const addFieldData = (type, data) => {
+  Object.entries(data).forEach(item => {
+    const [key, value] = item;
+    if (value !== '') {
+      db.collection(`${type}:${key}`)
+        .where('value', '==', value)
+        .get()
+        .then(querySnapshot => {
+          if (querySnapshot.empty) {
+            db.collection(`${type}:${key}`).add({ value });
+          }
+        });
+    }
+  });
 }
 
 const logout = () => {
