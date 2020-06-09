@@ -155,7 +155,13 @@ const addFieldDataListener = (field, dependency, cb) => {
       .onSnapshot(handleSnapshot(field, cb));
   }
   
-  getDependencyId(dependency);
+  getDependencyId(dependency)
+    .then(depId => fieldDataListeners[field] = db
+      .collection(field)
+      .doc(depId)
+      .collection('values')
+      .onSnapshot(handleSnapshot(field, cb))
+    ).catch(() => cb({ [field]: [] }));
 }
 
 const removeFieldDataListener = field => {
@@ -165,13 +171,15 @@ const removeFieldDataListener = field => {
 }
 
 const getDependencyId = dependency => {
-  const [depType, depKey, depValue] = dependency;
-  return new Promise(resolve => {
+  const [depType, depKey, depValue] = dependency.split(':');
+  
+  return new Promise((resolve, reject) => {
     db.collection(`${depType}:${depKey}`)
       .where('value', '==', depValue)
       .get()
       .then(querySnapshot => {
-        if (!querySnapshot.empty) resolve(querySnapshot.id);
+        if (querySnapshot.empty) return reject();
+        querySnapshot.forEach(doc => resolve(doc.id));
       });
   });
 }
