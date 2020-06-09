@@ -30,7 +30,7 @@ class InkPen extends Component {
             const useCount = this.inkUseCount(ink);
             return (
               <option key={ink.id} value={ink.id}>
-                {ink.brand} {ink.inkName} {ink.colorName}
+                {ink.brand} {ink.colorName}
                 {!!useCount && `(${useCount})`}
               </option>
             );

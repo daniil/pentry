@@ -21,7 +21,7 @@ class InkedPens extends Component {
     const currInk = inks.find(ink => ink.id === inkId);
 
     return (
-      <>{currInk.brand} {currInk.inkName} {currInk.colorName}</>
+      <>{currInk.brand} {currInk.colorName}</>
     );
   }
 

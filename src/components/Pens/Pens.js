@@ -24,7 +24,7 @@ class Pens extends Component {
 
   displayInk = penInked => {
     const currInk = this.props.inks.find(ink => ink.id === penInked.inkId);
-    return `${currInk.brand} ${currInk.inkName} ${currInk.colorName} ${!currInk.isActive && '(retired)'}`;
+    return `${currInk.brand} ${currInk.colorName} ${!currInk.isActive && '(retired)'}`;
   }
 
   render() {

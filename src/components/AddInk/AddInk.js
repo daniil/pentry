@@ -5,7 +5,6 @@ import { formatDay } from '../../utils/formatDate';
 const initState = {
   id: null,
   brand: '',
-  inkName: '',
   colorName: '',
   type: '',
   size: '',
@@ -20,11 +19,11 @@ class AddInk extends Component {
   componentDidUpdate(prevProps) {
     if (this.newInkDataPassed(prevProps)) {
       const { selectedInk: {
-        id, brand, inkName, colorName, type, size, hue, props, dateAcquired
+        id, brand, colorName, type, size, hue, props, dateAcquired
       } } = this.props;
 
       this.setState({
-        id, brand, inkName, colorName, type, size, hue, props,
+        id, brand, colorName, type, size, hue, props,
         dateAcquired: formatDay(dateAcquired.seconds)
       });
     }
@@ -68,22 +67,12 @@ class AddInk extends Component {
           type="ink:brand"
           value={this.state.brand}
           onChange={this.handleFieldChange} />
-        <div>
-          <input
-            type="text"
-            name="inkName"
-            placeholder="Ink Name"
-            onChange={this.handleInputChange}
-            value={this.state.inkName} />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="colorName"
-            placeholder="Color Name"
-            onChange={this.handleInputChange}
-            value={this.state.colorName} />
-        </div>
+        <AutosuggestField
+          label="Color Name"
+          type="ink:colorName"
+          value={this.state.colorName}
+          dependency={`ink:brand:${this.state.brand}`}
+          onChange={this.handleFieldChange} />
         <div>
           <input
             type="text"

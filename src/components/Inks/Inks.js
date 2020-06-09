@@ -31,7 +31,6 @@ class Inks extends Component {
           </li>
           <li>
             <div>Brand</div>
-            <div>Ink Name</div>
             <div>Color Name</div>
             <div>Type</div>
             <div>Size</div>
@@ -44,7 +43,6 @@ class Inks extends Component {
             return (
               <li key={ink.id}>
                 <div>{ink.brand}</div>
-                <div>{ink.inkName}</div>
                 <div>{ink.colorName}</div>
                 <div>{ink.type}</div>
                 <div>{ink.size}</div>

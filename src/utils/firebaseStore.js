@@ -148,16 +148,32 @@ const cleanPen = (userId, inkPenId) => {
     });
 }
 
-const addFieldDataListener = (field, cb) => {
-  fieldDataListeners[field] = db
-    .collection(field)
-    .onSnapshot(handleSnapshot(field, cb));
+const addFieldDataListener = (field, dependency, cb) => {
+  if (!dependency) {
+    return fieldDataListeners[field] = db
+      .collection(field)
+      .onSnapshot(handleSnapshot(field, cb));
+  }
+  
+  getDependencyId(dependency);
 }
 
 const removeFieldDataListener = field => {
   fieldDataListeners[field] && fieldDataListeners[field]();
   fieldDataListeners[field] = null;
   delete fieldDataListeners[field];
+}
+
+const getDependencyId = dependency => {
+  const [depType, depKey, depValue] = dependency;
+  return new Promise(resolve => {
+    db.collection(`${depType}:${depKey}`)
+      .where('value', '==', depValue)
+      .get()
+      .then(querySnapshot => {
+        if (!querySnapshot.empty) resolve(querySnapshot.id);
+      });
+  });
 }
 
 const addFieldData = (type, data) => {
