@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AutosuggestField from '../AutosuggestField';
 import { formatDay } from '../../utils/formatDate';
+import fieldDeps from '../../utils/fieldDependencies';
 
 const initState = {
   id: null,
@@ -71,7 +72,7 @@ class AddInk extends Component {
           label="Color Name"
           type="ink:colorName"
           value={this.state.colorName}
-          dependency={`ink:brand:${this.state.brand}`}
+          dependency={{ type: fieldDeps.ink.colorName, value: this.state.brand }}
           onChange={this.handleFieldChange} />
         <div>
           <input

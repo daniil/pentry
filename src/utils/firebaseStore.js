@@ -4,6 +4,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import firebaseConfig from '../firebaseConfig';
 import { firebaseFromDate, firebaseTimestamp } from './formatDate';
+import fieldDeps from './fieldDependencies';
 
 let db;
 let firebaseListener;
@@ -155,13 +156,13 @@ const addFieldDataListener = (field, dependency, cb) => {
       .onSnapshot(handleSnapshot(field, cb));
   }
   
-  getDependencyId(dependency)
-    .then(depId => fieldDataListeners[field] = db
+  if (dependency.value) {
+    fieldDataListeners[field] = db
       .collection(field)
-      .doc(depId)
+      .doc(dependency.value)
       .collection('values')
-      .onSnapshot(handleSnapshot(field, cb))
-    ).catch(() => cb({ [field]: [] }));
+      .onSnapshot(handleSnapshot(field, cb));
+  }
 }
 
 const removeFieldDataListener = field => {
@@ -170,34 +171,32 @@ const removeFieldDataListener = field => {
   delete fieldDataListeners[field];
 }
 
-const getDependencyId = dependency => {
-  const [depType, depKey, depValue] = dependency.split(':');
-  
-  return new Promise((resolve, reject) => {
-    db.collection(`${depType}:${depKey}`)
-      .where('value', '==', depValue)
-      .get()
-      .then(querySnapshot => {
-        if (querySnapshot.empty) return reject();
-        querySnapshot.forEach(doc => resolve(doc.id));
-      });
-  });
-}
-
 const addFieldData = (type, data) => {
   Object.entries(data).forEach(item => {
     const [key, value] = item;
+
     if (value !== '') {
-      db.collection(`${type}:${key}`)
-        .where('value', '==', value)
-        .get()
-        .then(querySnapshot => {
-          if (querySnapshot.empty) {
-            db.collection(`${type}:${key}`).add({ value });
-          }
-        });
+      const dependencyKey = fieldDeps[type][key];
+      const field = `${type}:${key}`;
+      const dependency = dependencyKey ? data[dependencyKey] : null;
+
+      addFieldDoc(field, value, dependency);
     }
   });
+}
+
+const addFieldDoc = (field, value, dependency) => {
+  const fieldCollection = dependency
+    ? db.collection(field).doc(dependency).collection('values')
+    : db.collection(field);
+
+  fieldCollection
+    .where('value', '==', value)
+    .get()
+    .then(querySnapshot => {
+      if (querySnapshot.empty)
+        fieldCollection.add({ value });
+    });
 }
 
 const logout = () => {
