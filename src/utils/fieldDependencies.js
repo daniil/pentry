@@ -2,5 +2,8 @@ export default {
   ink: {
     colorName: 'brand'
   },
-  pen: {}
+  pen: {
+    model: 'brand',
+    finishName: ['brand', 'model']
+  }
 }

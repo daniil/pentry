@@ -149,6 +149,11 @@ const cleanPen = (userId, inkPenId) => {
     });
 }
 
+const getDependencyValue = dependency => {
+  if (Array.isArray(dependency)) return dependency.join(' ');
+  return dependency;
+}
+
 const addFieldDataListener = (field, dependency, cb) => {
   if (!dependency) {
     return fieldDataListeners[field] = db
@@ -156,10 +161,12 @@ const addFieldDataListener = (field, dependency, cb) => {
       .onSnapshot(handleSnapshot(field, cb));
   }
   
-  if (dependency.value) {
+  const depValue = getDependencyValue(dependency.value);
+
+  if (depValue) {
     fieldDataListeners[field] = db
       .collection(field)
-      .doc(dependency.value)
+      .doc(depValue)
       .collection('values')
       .onSnapshot(handleSnapshot(field, cb));
   }

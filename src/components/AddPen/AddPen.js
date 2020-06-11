@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import AutosuggestField from '../AutosuggestField';
 import { formatDay } from '../../utils/formatDate';
+import fieldDeps from '../../utils/fieldDependencies';
 
 const initState = {
   id: null,
@@ -27,9 +29,13 @@ class AddPen extends Component {
     }
   }
 
-  handleInputChange = e => {
+  handleFieldChange = fieldVal => {
+    const isHTMLInput = 'target' in fieldVal;
+    const fieldKey = isHTMLInput ? fieldVal.target.name : fieldVal.key;
+    const fieldValue = isHTMLInput ? fieldVal.target.value : fieldVal.value;
+
     this.setState({
-      [e.target.name]: e.target.value
+      [fieldKey]: fieldValue
     });
   }
 
@@ -54,52 +60,42 @@ class AddPen extends Component {
   render() {
     return (
       <form>
-        <div>
-          <input
-            type="text"
-            name="brand"
-            placeholder="Brand"
-            onChange={this.handleInputChange}
-            value={this.state.brand} />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="model"
-            placeholder="Model Name"
-            onChange={this.handleInputChange}
-            value={this.state.model} />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="finishName"
-            placeholder="Finish Name"
-            onChange={this.handleInputChange}
-            value={this.state.finishName} />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="nibType"
-            placeholder="Nib Type"
-            onChange={this.handleInputChange}
-            value={this.state.nibType} />  
-        </div>
-        <div>
-          <input
-            type="text"
-            name="nibSize"
-            placeholder="Nib Size"
-            onChange={this.handleInputChange}
-            value={this.state.nibSize} />
-        </div>
+        <AutosuggestField
+          label="Brand"
+          type="pen:brand"
+          value={this.state.brand}
+          onChange={this.handleFieldChange} />
+        <AutosuggestField
+          label="Model Name"
+          type="pen:model"
+          value={this.state.model}
+          dependency={{ type: fieldDeps.pen.model, value: this.state.brand }}
+          onChange={this.handleFieldChange} />
+        <AutosuggestField
+          label="Finish Name"
+          type="pen:finishName"
+          value={this.state.finishName}
+          dependency={{
+            type: fieldDeps.pen.finishName,
+            value: [this.state.brand, this.state.model]
+          }}
+          onChange={this.handleFieldChange} />
+        <AutosuggestField
+          label="Nib Material"
+          type="pen:nibType"
+          value={this.state.nibType}
+          onChange={this.handleFieldChange} />
+        <AutosuggestField
+          label="Nib Size"
+          type="pen:nibSize"
+          value={this.state.nibSize}
+          onChange={this.handleFieldChange} />
         <div>
           <input
             type="date"
             name="dateAcquired"
             placeholder="Date Acquired"
-            onChange={this.handleInputChange}
+            onChange={this.handleFieldChange}
             value={this.state.dateAcquired} />
         </div>
         <button onClick={this.handleSubmit}>
