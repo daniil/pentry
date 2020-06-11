@@ -74,38 +74,26 @@ class AddInk extends Component {
           value={this.state.colorName}
           dependency={{ type: fieldDeps.ink.colorName, value: this.state.brand }}
           onChange={this.handleFieldChange} />
-        <div>
-          <input
-            type="text"
-            name="type"
-            placeholder="Type"
-            onChange={this.handleInputChange}
-            value={this.state.type} />  
-        </div>
-        <div>
-          <input
-            type="text"
-            name="size"
-            placeholder="Size"
-            onChange={this.handleInputChange}
-            value={this.state.size} />
-        </div>
-        <div>
-          <input
-            type="text"
-            name="hue"
-            placeholder="Hue"
-            onChange={this.handleInputChange}
-            value={this.state.hue} />  
-        </div>
-        <div>
-          <input
-            type="text"
-            name="props"
-            placeholder="Properties"
-            onChange={this.handleInputChange}
-            value={this.state.props} />  
-        </div>
+        <AutosuggestField
+          label="Type"
+          type="ink:type"
+          value={this.state.type}
+          onChange={this.handleFieldChange} />
+        <AutosuggestField
+          label="Size"
+          type="ink:size"
+          value={this.state.size}
+          onChange={this.handleFieldChange} />
+        <AutosuggestField
+          label="Color Hue"
+          type="ink:hue"
+          value={this.state.hue}
+          onChange={this.handleFieldChange} />
+        <AutosuggestField
+          label="Special Properties"
+          type="ink:props"
+          value={this.state.props}
+          onChange={this.handleFieldChange} />
         <div>
           <input
             type="date"
