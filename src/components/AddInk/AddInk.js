@@ -30,15 +30,13 @@ class AddInk extends Component {
     }
   }
 
-  handleInputChange = e => {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
-
   handleFieldChange = fieldVal => {
+    const isHTMLInput = 'target' in fieldVal;
+    const fieldKey = isHTMLInput ? fieldVal.target.name : fieldVal.key;
+    const fieldValue = isHTMLInput ? fieldVal.target.value : fieldVal.value;
+
     this.setState({
-      [fieldVal.key]: fieldVal.value
+      [fieldKey]: fieldValue
     });
   }
 
@@ -99,7 +97,7 @@ class AddInk extends Component {
             type="date"
             name="dateAcquired"
             placeholder="Date Acquired"
-            onChange={this.handleInputChange}
+            onChange={this.handleFieldChange}
             value={this.state.dateAcquired} />  
         </div>
         <button onClick={this.handleSubmit}>
