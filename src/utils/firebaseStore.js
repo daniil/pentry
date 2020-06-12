@@ -178,11 +178,20 @@ const removeFieldDataListener = field => {
   delete fieldDataListeners[field];
 }
 
+const storableField = item => {
+  const [key, value] = item;
+  const ignoredFields = {
+    id: true,
+    dateAcquired: true
+  };
+  return !ignoredFields[key] && value !== '';
+}
+
 const addFieldData = (type, data) => {
   Object.entries(data).forEach(item => {
     const [key, value] = item;
 
-    if (value !== '') {
+    if (storableField(item)) {
       const dependencyKey = fieldDeps[type][key];
       const field = `${type}:${key}`;
       const dependency = dependencyKey ? data[dependencyKey] : null;
