@@ -8,3 +8,9 @@ export const sortStringValueAsc = (data, key) => {
   });
   return data;
 }
+
+export const trimObjValues = obj => {
+  return Object.entries(obj).reduce((acc, [objKey, objVal]) => {
+    return { ...acc, [objKey]: objVal.trim() };
+  }, {});
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import AutosuggestField from '../AutosuggestField';
 import { formatDay } from '../../utils/formatDate';
+import { trimObjValues } from '../../utils/formatData';
 import fieldDeps from '../../utils/fieldDependencies';
 
 const initState = {
@@ -53,9 +54,9 @@ class AddInk extends Component {
   }
 
   cleanSubmitData = () => {
-    if (this.state.id) return this.state;
+    if (this.state.id) return trimObjValues(this.state);
     const { id, ...cleanState } = this.state;
-    return cleanState;
+    return trimObjValues(cleanState);
   }
 
   render() {
