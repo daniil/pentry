@@ -102,6 +102,7 @@ const addPen = (userId, penData) => {
     addedTimestamp: firebaseTimestamp(),
     isActive: true
   });
+  addFieldData('pen', penData);
 }
 
 const updatePen = (userId, penData) => {
@@ -187,6 +188,12 @@ const storableField = item => {
   return !ignoredFields[key] && value !== '';
 }
 
+const getDependencyDocId = (data, depKey) => {
+  return Array.isArray(depKey)
+    ? depKey.reduce((acc, val) => `${acc} ${data[val]}`, '').trim()
+    : data[depKey];
+}
+
 const addFieldData = (type, data) => {
   Object.entries(data).forEach(item => {
     const [key, value] = item;
@@ -194,7 +201,7 @@ const addFieldData = (type, data) => {
     if (storableField(item)) {
       const dependencyKey = fieldDeps[type][key];
       const field = `${type}:${key}`;
-      const dependency = dependencyKey ? data[dependencyKey] : null;
+      const dependency = dependencyKey ? getDependencyDocId(data, dependencyKey) : null;
 
       addFieldDoc(field, value, dependency);
     }
