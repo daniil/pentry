@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import firebaseStore from '../../utils/firebaseStore';
 import { sortStringValueAsc } from '../../utils/formatData';
+import useDebounce from '../../hooks/useDebounce';
 
 const AutosuggestField = ({ label, onChange, type, dependency, value }) => {
   const [valueListVisible, setValueListVisible] = useState(false);
   const [fieldData, setFieldData] = useState('[]');
   const [valueList, setValueList] = useState([]);
   const [, resourceName] = type.split(':');
+  const debouncedDep = useDebounce(dependency, 250);
 
   useEffect(() => {
     setValueList(JSON.stringify(JSON.parse(fieldData).filter(
@@ -15,13 +17,13 @@ const AutosuggestField = ({ label, onChange, type, dependency, value }) => {
   }, [value, onChange, resourceName, fieldData]);
 
   useEffect(() => {
-    firebaseStore.addFieldDataListener(type, dependency, data => {
+    firebaseStore.addFieldDataListener(type, debouncedDep, data => {
       setFieldData(JSON.stringify(sortStringValueAsc(data[type], 'value')));
     });
     return () => {
       firebaseStore.removeFieldDataListener(type);
     }
-  }, [type, dependency, fieldData]);
+  }, [type, debouncedDep]);
 
   const handleChange = newValue => onChange({ key: resourceName, value: newValue });
 
