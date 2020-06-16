@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import firebaseStore from '../../utils/firebaseStore';
 import { sortStringValueAsc } from '../../utils/formatData';
 import useDebounce from '../../hooks/useDebounce';
@@ -25,7 +25,9 @@ const AutosuggestField = ({ label, onChange, type, dependency, value }) => {
     }
   }, [type, debouncedDep]);
 
-  const handleChange = newValue => onChange({ key: resourceName, value: newValue });
+  const handleChange = useCallback(newValue => {
+    onChange({ key: resourceName, value: newValue });
+  }, [onChange, resourceName]);
 
   return (
     <div>
@@ -49,4 +51,4 @@ const AutosuggestField = ({ label, onChange, type, dependency, value }) => {
   )
 }
 
-export default AutosuggestField;
+export default React.memo(AutosuggestField);
