@@ -46,6 +46,11 @@ class AddPen extends Component {
     this.setState(initState);
   }
 
+  handleCancel = () => {
+    this.props.handleCancel();
+    this.setState(initState);
+  }
+
   newPenDataPassed = prevProps => {
     return this.props.selectedPen &&
       (!prevProps.selectedPen ||
@@ -102,6 +107,8 @@ class AddPen extends Component {
         <button onClick={this.handleSubmit}>
           {this.props.selectedPen ? 'Update' : 'Add'}
         </button>
+        {this.props.selectedPen &&
+          <button onClick={this.handleCancel}>Cancel</button>}
       </form>
     )
   }

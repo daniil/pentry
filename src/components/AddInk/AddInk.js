@@ -47,6 +47,11 @@ class AddInk extends Component {
     this.setState(initState);
   }
 
+  handleCancel = () => {
+    this.props.handleCancel();
+    this.setState(initState);
+  }
+
   newInkDataPassed = prevProps => {
     return this.props.selectedInk &&
       (!prevProps.selectedInk ||
@@ -104,6 +109,8 @@ class AddInk extends Component {
         <button onClick={this.handleSubmit}>
           {this.props.selectedInk ? 'Update' : 'Add'}
         </button>
+        {this.props.selectedInk &&
+          <button onClick={this.handleCancel}>Cancel</button>}
       </form>
     )
   }

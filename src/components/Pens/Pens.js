@@ -16,6 +16,10 @@ class Pens extends Component {
     this.props.handleSubmit(penData, isUpdate);
   }
 
+  handleCancel = () => {
+    this.setState({ selectedPen: null });
+  }
+
   checkPenInked = pen => {
     return this.props.inkedPens.find(inkedPen => {
       return inkedPen.penId === pen.id && inkedPen.isActive;
@@ -44,7 +48,8 @@ class Pens extends Component {
           <li>
             <AddPen 
               selectedPen={this.state.selectedPen}
-              handleSubmit={handleSubmit} />
+              handleSubmit={handleSubmit}
+              handleCancel={this.handleCancel} />
           </li>
           <li>
             <div>Brand</div>

@@ -16,6 +16,10 @@ class Inks extends Component {
     this.props.handleSubmit(inkData, isUpdate);
   }
 
+  handleCancel = () => {
+    this.setState({ selectedInk: null });
+  }
+
   render() {
     const { inks, handleRemove } =  this.props;
     const activeInks = inks.filter(ink => ink.isActive);
@@ -27,7 +31,8 @@ class Inks extends Component {
           <li>
             <AddInk
               selectedInk={this.state.selectedInk}
-              handleSubmit={this.handleSubmit} />
+              handleSubmit={this.handleSubmit}
+              handleCancel={this.handleCancel} />
           </li>
           <li>
             <div>Brand</div>
