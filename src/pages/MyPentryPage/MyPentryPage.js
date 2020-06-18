@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Switch, Route, Link } from 'react-router-dom';
+import SectionNav from '../../components/SectionNav';
 import Inks from '../../components/Inks';
 import Pens from '../../components/Pens';
 import InkPen from '../../components/InkPen';
@@ -90,17 +91,7 @@ class MyPentryPage extends Component {
           <strong>{this.state.user.email}</strong>&nbsp;
           (<Link to="/" onClick={this.handleLogout}>logout</Link>)
         </p>
-        <Link to={`${path}`}>
-          <h1>Pentry</h1>
-        </Link>
-        <ul>
-          <li>
-            <Link to={`${path}/inks`}>Inks</Link>
-          </li>
-          <li>
-            <Link to={`${path}/pens`}>Pens</Link>
-          </li>
-        </ul>
+        <SectionNav path={path} />
         <Switch>
           <Route path={`${path}`} exact render={routerProps => {
             return (

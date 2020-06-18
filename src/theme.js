@@ -1,6 +1,6 @@
 export default {
   colors: {
-    mediumOne: '#003844',
+    mediumOne: '#BB4430',
     mediumTwo: '#7f7eff',
     light: '#fbfaf8',
     darkOne: '#330f0a',
