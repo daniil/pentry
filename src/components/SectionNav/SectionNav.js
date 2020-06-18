@@ -1,18 +1,18 @@
 import React from 'react';
-import { NavList, NavListItem, NavItem, activeClassName } from './SectionNavStyled';
+import { NavList, NavListItem, NavItem } from './SectionNavStyled';
 
 const SectionNav = ({ path }) => {
   return (
     <nav>
       <NavList>
         <NavListItem>
-          <NavItem to={`${path}`} exact activeClasName={activeClassName}>Inked Pens</NavItem>
+          <NavItem to={`${path}`} exact>Inked Pens</NavItem>
         </NavListItem>
         <NavListItem>
-          <NavItem to={`${path}/inks`} activeClasName={activeClassName}>Inks</NavItem>
+          <NavItem to={`${path}/inks`}>Inks</NavItem>
         </NavListItem>
         <NavListItem>
-          <NavItem to={`${path}/pens`} activeClasName={activeClassName}>Pens</NavItem>
+          <NavItem to={`${path}/pens`}>Pens</NavItem>
         </NavListItem>
       </NavList>
     </nav>
