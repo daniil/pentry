@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import UserNav from '../../components/UserNav';
 import SectionNav from '../../components/SectionNav';
 import PentryPageRoutes from '../../routes/PentryPageRoutes';
 import InkPen from '../../components/InkPen';
@@ -36,10 +36,6 @@ class MyPentryPage extends Component {
         data => this.setState(data)
       )
     );
-  }
-
-  handleLogout = () => {
-    firebaseStore.logout();
   }
 
   handleInkSubmit = (inkData, isUpdate) => {
@@ -87,13 +83,10 @@ class MyPentryPage extends Component {
     const { path } = this.props.match;
 
     if (!this.state.user) return null;
+
     return (
       <main>
-        <p>
-          Welcome,&nbsp;
-          <strong>{this.state.user.email}</strong>&nbsp;
-          (<Link to="/" onClick={this.handleLogout}>logout</Link>)
-        </p>
+        <UserNav user={this.state.user} />
         <SectionNav path={path} />
         <PentryPageRoutes
           path={path}
