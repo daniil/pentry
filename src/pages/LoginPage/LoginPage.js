@@ -19,11 +19,11 @@ class LoginPage extends Component {
 
   render() {
     return (
-      <>
+      <main>
         <Login />
         - or -
         <Signup />
-      </>
+      </main>
     )
   }
 }

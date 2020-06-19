@@ -42,7 +42,7 @@ class Pens extends Component {
     const activePens = pens.filter(pen => pen.isActive);
 
     return (
-      <>
+      <section>
         <h2>My Pens</h2>
         <ul>
           <li>
@@ -88,7 +88,7 @@ class Pens extends Component {
             );
           })}
         </ul>
-      </>
+      </section>
     );
   }
 }

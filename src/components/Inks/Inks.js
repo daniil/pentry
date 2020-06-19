@@ -25,7 +25,7 @@ class Inks extends Component {
     const activeInks = inks.filter(ink => ink.isActive);
 
     return (
-      <>
+      <section>
         <h2>My Inks</h2>
         <ul>
           <li>
@@ -60,7 +60,7 @@ class Inks extends Component {
             );
           })}
         </ul>
-      </>
+      </section>
     )
   }
 }
