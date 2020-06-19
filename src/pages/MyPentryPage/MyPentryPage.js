@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Switch, Route, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SectionNav from '../../components/SectionNav';
-import Inks from '../../components/Inks';
-import Pens from '../../components/Pens';
+import PentryPageRoutes from '../../routes/PentryPageRoutes';
 import InkPen from '../../components/InkPen';
-import InkedPens from '../../components/InkedPens';
 import firebaseStore from '../../utils/firebaseStore';
 
 class MyPentryPage extends Component {
@@ -79,59 +77,35 @@ class MyPentryPage extends Component {
       .cleanPen(this.userId(), inkPen.id);
   }
 
+  getHandlers = () => {
+    return Object.entries(this).filter(objArr => {
+      return typeof objArr[1] === 'function' && objArr[0].includes('handle');
+    }).reduce((acc, val) => ({ ...acc, [val[0]]: val[1] }), {});
+  }
+
   render() {
     const { path } = this.props.match;
 
     if (!this.state.user) return null;
-
     return (
-      <>
+      <main>
         <p>
           Welcome,&nbsp;
           <strong>{this.state.user.email}</strong>&nbsp;
           (<Link to="/" onClick={this.handleLogout}>logout</Link>)
         </p>
         <SectionNav path={path} />
-        <Switch>
-          <Route path={`${path}`} exact render={routerProps => {
-            return (
-              <InkedPens
-                inks={this.state.inks}
-                pens={this.state.pens}
-                inkedPens={this.state.inkedPens}
-                {...routerProps} />
-            )
-          }} />
-          <Route path={`${path}/inks`} render={routerProps => {
-            return (
-              <Inks
-                inks={this.state.inks}
-                handleSubmit={this.handleInkSubmit}
-                handleRemove={this.handleInkRemove}
-                {...routerProps} />
-            )
-          }} />
-          <Route path={`${path}/pens`} render={routerProps => {
-            return (
-              <Pens
-                pens={this.state.pens}
-                inks={this.state.inks}
-                inkedPens={this.state.inkedPens}
-                handleSubmit={this.handlePenSubmit}
-                handleRemove={this.handlePenRemove}
-                handleInking={this.handlePenInking}
-                handleCleaning={this.handlePenCleaning}
-                {...routerProps} />
-            )
-          }} />
-        </Switch>
+        <PentryPageRoutes
+          path={path}
+          parentState={this.state}
+          handlers={this.getHandlers()} />
         {this.state.inkPen &&
           <InkPen
             pen={this.state.inkPen}
             inks={this.state.inks}
             inkedPens={this.state.inkedPens}
             handleInkChoice={this.handleInkChoice} />}
-      </>
+      </main>
     )
   }
 }

@@ -8,8 +8,8 @@ import firebaseStore from './utils/firebaseStore';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import theme from './theme';
-import './reset.css';
-import './fonts.css';
+import './css/reset.css';
+import './css/fonts.css';
 
 class App extends Component {
   constructor() {

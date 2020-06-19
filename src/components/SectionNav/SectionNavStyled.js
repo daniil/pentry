@@ -19,7 +19,6 @@ const NavItem = styled(NavLink).attrs({
   activeClassName
 })`
   font-size: ${props => props.theme.typeScale[4]}rem;
-  color: ${props => props.theme.colors.mediumOne};
   font-weight: 700;
   text-decoration: none;
 
@@ -29,10 +28,14 @@ const NavItem = styled(NavLink).attrs({
   }
 
   &:hover,
-  &:focus,
-  &.${activeClassName} {
+  &:focus {
     opacity: 0.75;
   }
+
+  &.${activeClassName} {
+    opacity: 0.5;
+  }
+  
 `;
 
 export {
