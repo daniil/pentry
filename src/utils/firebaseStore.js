@@ -7,6 +7,7 @@ import { firebaseFromDate, firebaseTimestamp } from './formatDate';
 import fieldDeps from './fieldDependencies';
 
 let db;
+let storage;
 let firebaseListener;
 let snapshotListeners;
 let fieldDataListeners = {};
@@ -14,6 +15,7 @@ let fieldDataListeners = {};
 const init = () => {
   !firebase.apps.length && firebase.initializeApp(firebaseConfig);
   db = firebase.firestore();
+  storage  = firebase.storage().ref();
 }
 
 const addAuthListener = () => {
@@ -222,6 +224,20 @@ const addFieldDoc = (field, value, dependency) => {
     });
 }
 
+const uploadImage = (path, file) => {
+  const metadata = {
+    'contentType': file.type
+  };
+
+  return storage
+    .child(`${path}/${file.name}`)
+    .put(file, metadata)
+    .then(snapshot => {
+      console.log('Metadata', snapshot.metadata);
+      return snapshot.ref.getDownloadURL().then(url => url);
+    })
+}
+
 const logout = () => {
   firebase.auth().signOut();
 }
@@ -242,5 +258,6 @@ export default {
   cleanPen,
   addFieldDataListener,
   removeFieldDataListener,
+  uploadImage,
   logout
 }

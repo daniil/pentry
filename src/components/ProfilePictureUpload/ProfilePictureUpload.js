@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import firebaseStore from '../../utils/firebaseStore';
 
 const ProfilePictureUpload = () => {
   const [previewFile, setPreviewFile] = useState(null);
@@ -7,18 +8,20 @@ const ProfilePictureUpload = () => {
   const handleImageSelect = e => {
     const file = e.target.files[0];
     const reader = new FileReader();
-
-    setSelectedFile(file);
     
     reader.onload = function(e) {
       setPreviewFile(e.target.result);
     }
-
     reader.readAsDataURL(file);
+
+    setSelectedFile(file);
   }
 
-  const handleImageUpload = () => {
-    //TODO: Manage Firebase Upload
+  const handleImageUpload = e => {
+    e.preventDefault();
+    firebaseStore
+      .uploadImage('avatars', selectedFile)
+      .then(res => console.log('Upload res', res));
   }
 
   return (
