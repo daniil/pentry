@@ -224,13 +224,13 @@ const addFieldDoc = (field, value, dependency) => {
     });
 }
 
-const uploadImage = (path, file) => {
+const uploadImage = (path, fileName, file) => {
   const metadata = {
     'contentType': file.type
   };
 
   return storage
-    .child(`${path}/${file.name}`)
+    .child(`${path}/${fileName}`)
     .put(file, metadata)
     .then(snapshot => {
       console.log('Metadata', snapshot.metadata);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import firebaseStore from '../../utils/firebaseStore';
 
-const ProfilePictureUpload = () => {
+const ProfilePictureUpload = ({ user }) => {
   const [previewFile, setPreviewFile] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -19,8 +19,9 @@ const ProfilePictureUpload = () => {
 
   const handleImageUpload = e => {
     e.preventDefault();
+    const ext = selectedFile.name.split('.').slice(-1)[0];
     firebaseStore
-      .uploadImage('avatars', selectedFile)
+      .uploadImage('avatars', `${user.authUser.uid}.${ext}`, selectedFile)
       .then(res => console.log('Upload res', res));
   }
 
