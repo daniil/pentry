@@ -233,9 +233,14 @@ const uploadImage = (path, fileName, file) => {
     .child(`${path}/${fileName}`)
     .put(file, metadata)
     .then(snapshot => {
-      console.log('Metadata', snapshot.metadata);
-      return snapshot.ref.getDownloadURL().then(url => url);
-    })
+      return { filePath: snapshot.metadata.fullPath };
+    });
+}
+
+const getFileURL = path => {
+  return storage
+    .child(path)
+    .getDownloadURL();
 }
 
 const logout = () => {
@@ -259,5 +264,6 @@ export default {
   addFieldDataListener,
   removeFieldDataListener,
   uploadImage,
+  getFileURL,
   logout
 }

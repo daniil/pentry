@@ -17,12 +17,31 @@ const ProfilePictureUpload = ({ user }) => {
     setSelectedFile(file);
   }
 
+  const generateAvatarProps = fileObj => {
+    const filePathArr = fileObj.filePath.split('.');
+    const getResizedFilePath = res => `${filePathArr[0]}_${res}.${filePathArr[1]}`;
+    return {
+      avatar: getResizedFilePath('100x100'),
+      avatarFull: getResizedFilePath('600x600')
+    };
+  }
+
   const handleImageUpload = e => {
     e.preventDefault();
     const ext = selectedFile.name.split('.').slice(-1)[0];
     firebaseStore
       .uploadImage('avatars', `${user.authUser.uid}.${ext}`, selectedFile)
-      .then(res => console.log('Upload res', res));
+      .then(res => {
+        const avatarObj = generateAvatarProps(res);
+        Promise.all([
+          firebaseStore.getFileURL(avatarObj.avatar),
+          firebaseStore.getFileURL(avatarObj.avatarFull)
+        ]).then(([avatar, avatarFull]) => user.setUserDetails({
+          ...user.userDetails,
+          avatar,
+          avatarFull
+        }));
+      });
   }
 
   return (

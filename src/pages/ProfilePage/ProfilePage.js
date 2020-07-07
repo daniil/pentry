@@ -3,12 +3,15 @@ import { UserContext } from '../../context/UserProvider';
 import ProfilePictureUpload from '../../components/ProfilePictureUpload';
 
 const ProfilePage = () => {
-  const user = useContext(UserContext);  
+  const user = useContext(UserContext);
+  
   return (
     <>
       <h2>Profile Page</h2>
       {user.authUser && 
         <>
+          {user.userDetails && user.userDetails.avatar &&
+            <img src={user.userDetails.avatar} alt="User Profile" />}
           <p>{user.authUser.email}</p>
           <ProfilePictureUpload
             user={user} />
