@@ -11,7 +11,10 @@ const ProfilePage = () => {
       {user.authUser && 
         <>
           {user.userDetails && user.userDetails.avatar &&
-            <img src={user.userDetails.avatar} alt="User Profile" />}
+            <img
+              key={user.userDetails.updatedTimestamp}
+              src={user.userDetails.avatar}
+              alt="User Profile" />}
           <p>{user.authUser.email}</p>
           <ProfilePictureUpload
             user={user} />
