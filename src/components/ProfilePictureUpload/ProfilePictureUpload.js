@@ -33,7 +33,9 @@ const ProfilePictureUpload = ({ user }) => {
       .uploadImage('avatars', `${user.authUser.uid}.${ext}`, selectedFile)
       .then(res => {
         const avatarObj = generateAvatarProps(res);
-        user.updateAvatar(avatarObj);
+        firebaseStore
+          .updateUserDetails(user.authUser.uid, avatarObj)
+          .then(() => user.updateAvatar(user.authUser.uid));
       });
   }
 

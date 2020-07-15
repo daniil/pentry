@@ -87,6 +87,24 @@ const loginUser = userInfo => {
     });
 }
 
+const getUserDetails = (userId) => {
+  return db
+    .collection('users')
+    .doc(userId)
+    .get()
+    .then(doc => doc.data());
+}
+
+const updateUserDetails = (userId, userDetails) => {
+  return db
+    .collection('users')
+    .doc(userId)
+    .update({
+      ...userDetails,
+      updatedTimestamp: firebaseTimestamp()
+    });
+}
+
 const inksCollection = userId => {
   return db.collection('users').doc(userId).collection('inks');
 }
@@ -284,6 +302,8 @@ export default {
   removeSnapshotListeners,
   signupUser,
   loginUser,
+  getUserDetails,
+  updateUserDetails,
   addInk,
   updateInk,
   removeInk,

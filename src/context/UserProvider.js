@@ -12,29 +12,32 @@ const UserProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [userDetails, setUserDetails] = useState(initUserDetails);
 
-  const updateAvatar = useCallback(avatarObj => {
-    Promise.all([
-      firebaseStore.getFileURL(avatarObj.avatar),
-      firebaseStore.getFileURL(avatarObj.avatarFull)
-    ]).then(([avatar, avatarFull]) => setUserDetails(JSON.stringify({
-      ...JSON.parse(userDetails),
-      avatar,
-      avatarFull,
-      updatedTimestamp: Date.now()
-    })));
+  const updateAvatar = useCallback(userId => {
+    firebaseStore
+      .getUserDetails(userId)
+      .then(res => {
+        Promise.all([
+          firebaseStore.getFileURL(res.avatar),
+          firebaseStore.getFileURL(res.avatarFull)
+        ]).then(([avatar, avatarFull]) => setUserDetails(JSON.stringify({
+          ...JSON.parse(userDetails),
+          avatar,
+          avatarFull,
+          updatedTimestamp: res.updatedTimestamp.seconds
+        })));
+      })
   }, [userDetails, setUserDetails]);
 
   useEffect(() => {
     firebaseStore.addAuthListener().then(setAuthUser);
   }, []);
 
+  const userId = authUser && authUser.uid;
+
   useEffect(() => {
-    if (!authUser) return;
-    updateAvatar({
-      avatar: `avatars/${authUser.uid}_100x100.jpg`,
-      avatarFull: `avatars/${authUser.uid}_600x600.jpg`
-    });
-  }, [authUser, updateAvatar]);
+    if (!userId) return;
+    updateAvatar(userId);
+  }, [userId, updateAvatar]);
   
   return (
     <UserContext.Provider value={{
