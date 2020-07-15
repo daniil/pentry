@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase from 'firebase';
+import firebaseStore from '../../utils/firebaseStore';
 
 class Signup extends Component {
   state = {
@@ -8,8 +8,6 @@ class Signup extends Component {
     passwordRepeat: '',
     validationMessage: ''
   }
-
-  db = firebase.firestore()
 
   handleInputChange = e => {
     this.setState({
@@ -28,26 +26,13 @@ class Signup extends Component {
       return;
     }
 
-    firebase
-      .auth()
-      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-      .then(() => {
-        firebase
-          .auth()
-          .createUserWithEmailAndPassword(this.state.email, this.state.password)
-          .then(res => {
-            this
-              .db
-              .collection('users')
-              .doc(res.user.uid)
-              .set({ email: res.user.email });
-          })
-          .catch(err => {
-            this.setState({
-              validationMessage: err.message
-            });
-          });
-      })
+    firebaseStore
+      .signupUser(this.state)
+      .catch(err => {
+        this.setState({
+          validationMessage: err.message
+        });
+      });
   }
 
   render() {

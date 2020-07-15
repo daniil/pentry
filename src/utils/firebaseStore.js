@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import "firebase/analytics";
 import "firebase/auth";
 import "firebase/firestore";
+import 'firebase/storage';
 import firebaseConfig from '../firebaseConfig';
 import { firebaseFromDate, firebaseTimestamp } from './formatDate';
 import fieldDeps from './fieldDependencies';
@@ -56,6 +57,23 @@ const addSnapshotListeners = (userId, cb) => {
 const removeSnapshotListeners = () => {
   snapshotListeners && snapshotListeners.map(listener => listener());
   snapshotListeners = null;
+}
+
+const signupUser = userInfo => {
+  return firebase
+    .auth()
+    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => {
+      return firebase
+        .auth()
+        .createUserWithEmailAndPassword(userInfo.email, userInfo.password);
+    })
+    .then(res => {
+      return db
+        .collection('users')
+        .doc(res.user.uid)
+        .set({ email: res.user.email });
+    });
 }
 
 const inksCollection = userId => {
@@ -253,6 +271,7 @@ export default {
   removeAuthListener,
   addSnapshotListeners,
   removeSnapshotListeners,
+  signupUser,
   addInk,
   updateInk,
   removeInk,
