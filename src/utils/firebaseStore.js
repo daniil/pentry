@@ -76,6 +76,17 @@ const signupUser = userInfo => {
     });
 }
 
+const loginUser = userInfo => {
+  return firebase
+    .auth()
+    .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    .then(() => {
+      return firebase
+        .auth()
+        .signInWithEmailAndPassword(userInfo.email, userInfo.password);
+    });
+}
+
 const inksCollection = userId => {
   return db.collection('users').doc(userId).collection('inks');
 }
@@ -272,6 +283,7 @@ export default {
   addSnapshotListeners,
   removeSnapshotListeners,
   signupUser,
+  loginUser,
   addInk,
   updateInk,
   removeInk,
