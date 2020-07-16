@@ -6,6 +6,12 @@ const ProfilePictureUpload = ({ user }) => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleImageSelect = e => {
+    if (!e.target.files.length) {
+      setPreviewFile(null);
+      setSelectedFile(null);
+      return;
+    };
+
     const file = e.target.files[0];
     const reader = new FileReader();
     
