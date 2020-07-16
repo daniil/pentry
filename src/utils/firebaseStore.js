@@ -72,7 +72,10 @@ const signupUser = userInfo => {
       return db
         .collection('users')
         .doc(res.user.uid)
-        .set({ email: res.user.email });
+        .set({
+          email: res.user.email,
+          updatedTimestamp: firebaseTimestamp()
+        });
     });
 }
 

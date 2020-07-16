@@ -12,20 +12,16 @@ const UserProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [userDetails, setUserDetails] = useState(initUserDetails);
 
-  const updateAvatar = useCallback(userId => {
-    firebaseStore
-      .getUserDetails(userId)
-      .then(res => {
-        Promise.all([
-          firebaseStore.getFileURL(res.avatar),
-          firebaseStore.getFileURL(res.avatarFull)
-        ]).then(([avatar, avatarFull]) => setUserDetails(JSON.stringify({
-          ...JSON.parse(userDetails),
-          avatar,
-          avatarFull,
-          updatedTimestamp: res.updatedTimestamp.seconds
-        })));
-      })
+  const updateAvatar = useCallback(avatarObj => {
+    Promise.all([
+      firebaseStore.getFileURL(avatarObj.avatar),
+      firebaseStore.getFileURL(avatarObj.avatarFull)
+    ]).then(([avatar, avatarFull]) => setUserDetails(JSON.stringify({
+      ...JSON.parse(userDetails),
+      avatar,
+      avatarFull,
+      updatedTimestamp: avatarObj.updatedTimestamp.seconds
+    })));
   }, [userDetails, setUserDetails]);
 
   useEffect(() => {
@@ -36,7 +32,9 @@ const UserProvider = ({ children }) => {
 
   useEffect(() => {
     if (!userId) return;
-    updateAvatar(userId);
+    firebaseStore
+      .getUserDetails(userId)
+      .then(updateAvatar)
   }, [userId, updateAvatar]);
   
   return (
