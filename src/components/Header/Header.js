@@ -1,10 +1,12 @@
 import React from 'react';
-import { Heading } from './HeaderStyled';
+import { BareLink, Heading } from './HeaderStyled';
 
 const Header = () => {
   return (
     <header>
-      <Heading>Pentry</Heading>
+      <BareLink to="/my">
+        <Heading>Pentry</Heading>
+      </BareLink>
     </header>
   )
 }

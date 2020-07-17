@@ -1,15 +1,17 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../../context/UserProvider';
+import UserNav from '../../components/UserNav';
 import ProfilePictureUpload from '../../components/ProfilePictureUpload';
 
 const ProfilePage = () => {
   const user = useContext(UserContext);
   
   return (
-    <>
-      <h2>Profile Page</h2>
+    <main>
       {user.authUser && 
         <>
+          <UserNav user={user.authUser} />
+          <h2>Profile Page</h2>
           {user.userDetails && user.userDetails.avatar &&
             <img
               key={user.userDetails.updatedTimestamp}
@@ -20,7 +22,7 @@ const ProfilePage = () => {
             user={user} />
         </>}
 
-    </>
+    </main>
   )
 }
 

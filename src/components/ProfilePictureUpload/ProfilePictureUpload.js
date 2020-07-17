@@ -41,12 +41,14 @@ const ProfilePictureUpload = ({ user }) => {
         const avatarObj = generateAvatarProps(res);
         firebaseStore
           .updateUserDetails(user.authUser.uid, avatarObj)
-          .then(() => user.updateAvatar({
-            ...avatarObj,
-            updatedTimestamp: {
-              seconds: Date.now() / 1000
-            }
-          }));
+          .then(() => {
+            user.updateAvatar({
+              ...avatarObj,
+              updatedTimestamp: { seconds: Date.now() / 1000 }
+            });
+            setPreviewFile(null);
+            setSelectedFile(null);
+          });
       });
   }
 
