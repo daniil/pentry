@@ -13,6 +13,8 @@ const UserProvider = ({ children }) => {
   const [userDetails, setUserDetails] = useState(initUserDetails);
 
   const updateAvatar = useCallback(avatarObj => {
+    if (!avatarObj.avatar || !avatarObj.avatarFull) return;
+
     Promise.all([
       firebaseStore.getFileURL(avatarObj.avatar),
       firebaseStore.getFileURL(avatarObj.avatarFull)
@@ -34,7 +36,7 @@ const UserProvider = ({ children }) => {
     if (!userId) return;
     firebaseStore
       .getUserDetails(userId)
-      .then(updateAvatar)
+      .then(updateAvatar);
   }, [userId, updateAvatar]);
   
   return (
